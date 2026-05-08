@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kategoriyalar | Novus Homme Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{cormorant:["'Cormorant Garamond'","serif"]}}}}</script>
+  <style>
+    .font-cormorant{font-family:'Cormorant Garamond',serif;}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:50;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+  </style>
+</head>
+<body class="bg-[#F5F5F3] min-h-screen">
+
+  <aside class="fixed left-0 top-0 bottom-0 w-60 bg-white border-r border-gray-100 flex flex-col z-40">
+    <div class="px-6 py-5 border-b border-gray-100">
+      <div class="flex flex-col leading-none">
+        <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[20px] font-medium">NOVUS</span>
+        <span class="tracking-[0.5em] text-[#C9A96E] text-[9px] font-semibold">HOMME · ADMIN</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <a href="index.html"      data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Dashboard</a>
+      <a href="products.html"   data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Mahsulotlar</a>
+      <a href="orders.html"     data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Buyurtmalar</a>
+      <a href="categories.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Kategoriyalar</a>
+      <a href="promo.html"      data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Promo Kodlar</a>
+      <a href="settings.html"   data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Sozlamalar</a>
+    </nav>
+    <div class="border-t border-gray-100 p-4">
+      <a href="../index.html" target="_blank" class="block text-center text-[10px] text-[#6B6B6B] hover:text-[#C9A96E] tracking-widest uppercase mb-3">Do'konni Ko'rish ↗</a>
+      <button onclick="logout()" class="w-full text-[10px] tracking-widest uppercase text-red-500 hover:text-red-700 font-semibold transition-colors">Chiqish</button>
+    </div>
+  </aside>
+
+  <main class="ml-60 p-8">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="font-cormorant text-3xl text-[#1A1A1A] font-medium">Kategoriyalar</h1>
+          <p class="text-xs text-[#6B6B6B] tracking-wide mt-1">Mahsulot kategoriyalarini boshqarish</p>
+        </div>
+        <button onclick="openAddModal()" class="bg-[#1A1A1A] text-white px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold hover:bg-[#333] transition-colors">
+          + Kategoriya Qo'shish
+        </button>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid grid-cols-3 gap-4 mb-8" id="stats-row"></div>
+
+      <!-- Table -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Barcha Kategoriyalar</h2>
+          <span id="cat-count" class="text-xs text-[#6B6B6B]"></span>
+        </div>
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <th class="text-left px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Kategoriya</th>
+              <th class="text-left px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Slug (URL)</th>
+              <th class="text-center px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Mahsulotlar</th>
+              <th class="text-center px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Holat</th>
+              <th class="text-right px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="cat-table-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Add/Edit Modal -->
+  <div id="cat-modal" class="modal-overlay">
+    <div class="bg-white w-full max-w-lg mx-4 shadow-xl">
+      <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <h2 id="modal-title" class="font-cormorant text-xl text-[#1A1A1A] font-medium">Kategoriya Qo'shish</h2>
+        <button onclick="closeModal()" class="text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-5">
+        <input type="hidden" id="edit-id" />
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Kategoriya Nomi <span class="text-red-500">*</span></label>
+          <input id="cat-name" type="text" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="Ko'ylaklar" />
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Slug (URL uchun) <span class="text-red-500">*</span></label>
+          <input id="cat-slug" type="text" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="shirts" />
+          <p class="text-[10px] text-[#6B6B6B] mt-1">Faqat lotin harflari va tire. Masalan: shirts, new-arrivals</p>
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Tavsif</label>
+          <textarea id="cat-desc" rows="3" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors resize-none" placeholder="Kategoriya haqida qisqacha..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Tartib raqami</label>
+          <input id="cat-order" type="number" min="0" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="0" />
+        </div>
+        <div class="flex items-center gap-3">
+          <input id="cat-active" type="checkbox" checked class="w-4 h-4 accent-[#C9A96E]" />
+          <label for="cat-active" class="text-sm text-[#1A1A1A]">Faol (saytda ko'rinadi)</label>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end">
+        <button onclick="closeModal()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors border border-gray-200 hover:border-gray-400">Bekor Qilish</button>
+        <button onclick="saveCategory()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/admin.js"></script>
+  <script>
+    requireAuth();
+
+    let categories = [];
+    let editingId = null;
+
+    function loadCategories() {
+      categories = getCategories();
+      renderStats();
+      renderTable();
+    }
+
+    function renderStats() {
+      const products = getProducts();
+      const active = categories.filter(c => c.active !== false).length;
+      const total = categories.length;
+      const withProducts = categories.filter(c => products.some(p => p.category.toLowerCase() === c.name.toLowerCase())).length;
+
+      document.getElementById('stats-row').innerHTML = `
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Jami Kategoriyalar</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${total}</p>
+        </div>
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Faol</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${active}</p>
+        </div>
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Mahsulotli</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${withProducts}</p>
+        </div>
+      `;
+    }
+
+    function renderTable() {
+      const products = getProducts();
+      const sorted = [...categories].sort((a, b) => (a.order || 0) - (b.order || 0));
+      document.getElementById('cat-count').textContent = sorted.length + ' ta kategoriya';
+
+      const tbody = document.getElementById('cat-table-body');
+      if (!sorted.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#6B6B6B] text-sm">Hali kategoriya yo'q</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = sorted.map(cat => {
+        const count = products.filter(p => p.category.toLowerCase() === cat.name.toLowerCase()).length;
+        const isActive = cat.active !== false;
+        return `
+          <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="font-semibold text-sm text-[#1A1A1A]">${cat.name}</div>
+              ${cat.description ? `<div class="text-xs text-[#6B6B6B] mt-0.5 line-clamp-1">${cat.description}</div>` : ''}
+            </td>
+            <td class="px-6 py-4">
+              <code class="text-xs bg-gray-100 px-2 py-1 rounded text-[#6B6B6B]">${cat.slug}</code>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-sm font-medium text-[#1A1A1A]">${count}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex items-center px-2.5 py-1 text-[10px] font-semibold tracking-wide rounded-full ${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">
+                ${isActive ? 'Faol' : 'Nofaol'}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button onclick="openEditModal('${cat.id}')" class="text-xs text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors px-3 py-1.5 border border-gray-200 hover:border-gray-400">Tahrirlash</button>
+                <button onclick="deleteCategory('${cat.id}')" class="text-xs text-red-500 hover:text-red-700 transition-colors px-3 py-1.5 border border-red-200 hover:border-red-400">O'chirish</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modal-title').textContent = "Kategoriya Qo'shish";
+      document.getElementById('edit-id').value = '';
+      document.getElementById('cat-name').value = '';
+      document.getElementById('cat-slug').value = '';
+      document.getElementById('cat-desc').value = '';
+      document.getElementById('cat-order').value = '';
+      document.getElementById('cat-active').checked = true;
+      document.getElementById('cat-modal').classList.add('open');
+
+      document.getElementById('cat-name').addEventListener('input', autoSlug);
+    }
+
+    function autoSlug(e) {
+      if (editingId) return;
+      const slug = e.target.value
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+      document.getElementById('cat-slug').value = slug;
+    }
+
+    function openEditModal(id) {
+      const cat = categories.find(c => c.id === id);
+      if (!cat) return;
+      editingId = id;
+      document.getElementById('modal-title').textContent = 'Kategoriyani Tahrirlash';
+      document.getElementById('edit-id').value = id;
+      document.getElementById('cat-name').value = cat.name;
+      document.getElementById('cat-slug').value = cat.slug;
+      document.getElementById('cat-desc').value = cat.description || '';
+      document.getElementById('cat-order').value = cat.order || 0;
+      document.getElementById('cat-active').checked = cat.active !== false;
+      document.getElementById('cat-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('cat-modal').classList.remove('open');
+      editingId = null;
+    }
+
+    function saveCategory() {
+      const name = document.getElementById('cat-name').value.trim();
+      const slug = document.getElementById('cat-slug').value.trim().toLowerCase();
+      const desc = document.getElementById('cat-desc').value.trim();
+      const order = parseInt(document.getElementById('cat-order').value) || 0;
+      const active = document.getElementById('cat-active').checked;
+
+      if (!name) { toast("Kategoriya nomini kiriting", 'error'); return; }
+      if (!slug) { toast("Slug kiriting", 'error'); return; }
+      if (!/^[a-z0-9-]+$/.test(slug)) { toast("Slug faqat lotin harflari va tire bo'lishi kerak", 'error'); return; }
+
+      const duplicate = categories.find(c => c.slug === slug && c.id !== editingId);
+      if (duplicate) { toast("Bu slug allaqachon mavjud", 'error'); return; }
+
+      if (editingId) {
+        categories = categories.map(c => c.id === editingId ? { ...c, name, slug, description: desc, order, active } : c);
+        toast("Kategoriya yangilandi");
+      } else {
+        const newCat = { id: 'cat_' + Date.now(), name, slug, description: desc, order, active, createdAt: new Date().toISOString() };
+        categories.push(newCat);
+        toast("Kategoriya qo'shildi");
+      }
+
+      saveCategories(categories);
+      closeModal();
+      renderStats();
+      renderTable();
+    }
+
+    function deleteCategory(id) {
+      const cat = categories.find(c => c.id === id);
+      if (!cat) return;
+      const products = getProducts();
+      const count = products.filter(p => p.category.toLowerCase() === cat.name.toLowerCase()).length;
+      const msg = count > 0
+        ? `"${cat.name}" kategoriyasini o'chirmoqchimisiz? Bu kategoriyaga ${count} ta mahsulot bog'liq!`
+        : `"${cat.name}" kategoriyasini o'chirmoqchimisiz?`;
+
+      confirmModal(msg, () => {
+        categories = categories.filter(c => c.id !== id);
+        saveCategories(categories);
+        toast("Kategoriya o'chirildi");
+        renderStats();
+        renderTable();
+      });
+    }
+
+    document.getElementById('cat-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('cat-modal')) closeModal();
+    });
+
+    loadCategories();
+  </script>
+</body>
+</html>

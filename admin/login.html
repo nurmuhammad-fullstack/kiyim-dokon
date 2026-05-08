@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Kirish | Novus Homme</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{cormorant:["'Cormorant Garamond'","serif"]}}}}</script>
+  <style>.font-cormorant{font-family:'Cormorant Garamond',serif;}</style>
+</head>
+<body class="bg-[#F5F5F3] min-h-screen flex items-center justify-center px-4">
+
+  <div class="w-full max-w-md">
+    <!-- Logo -->
+    <div class="text-center mb-10">
+      <a href="../index.html" class="inline-flex flex-col items-center leading-none">
+        <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[28px] font-medium">NOVUS</span>
+        <span class="tracking-[0.5em] text-[#C9A96E] text-[10px] font-semibold">HOMME</span>
+      </a>
+      <p class="text-[#6B6B6B] text-xs tracking-[0.2em] uppercase mt-3">Admin Panel</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white shadow-sm border border-gray-100 p-8 lg:p-10">
+      <h1 class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-1">Xush kelibsiz</h1>
+      <p class="text-[#6B6B6B] text-xs mb-8">Davom etish uchun tizimga kiring.</p>
+
+      <div id="error-msg" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs px-4 py-3 rounded mb-6"></div>
+
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Foydalanuvchi nomi</label>
+          <input id="username" type="text" value="admin" class="w-full border border-gray-200 px-4 py-3 text-sm text-[#1A1A1A] outline-none focus:border-[#C9A96E] transition-colors" placeholder="admin" />
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Parol</label>
+          <div class="relative">
+            <input id="password" type="password" class="w-full border border-gray-200 px-4 py-3 text-sm text-[#1A1A1A] outline-none focus:border-[#C9A96E] transition-colors pr-10" placeholder="••••••••" />
+            <button type="button" id="toggle-pw" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#1A1A1A] transition-colors">
+              <svg id="eye-show" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eye-hide" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-[#1A1A1A] text-white py-3.5 tracking-widest uppercase text-[11px] font-semibold hover:bg-[#333] transition-colors mt-2">
+          Kirish
+        </button>
+      </form>
+
+      <p class="text-center text-[10px] text-gray-400 mt-6">Standart: admin / admin123</p>
+    </div>
+
+    <p class="text-center text-[10px] text-gray-400 mt-6">© 2026 Novus Homme Admin Panel</p>
+  </div>
+
+  <script src="assets/admin.js"></script>
+  <script>
+    if (isLoggedIn()) window.location.href = 'index.html';
+
+    document.getElementById('toggle-pw').addEventListener('click', () => {
+      const pw = document.getElementById('password');
+      const show = document.getElementById('eye-show');
+      const hide = document.getElementById('eye-hide');
+      if (pw.type === 'password') { pw.type = 'text'; show.classList.add('hidden'); hide.classList.remove('hidden'); }
+      else { pw.type = 'password'; show.classList.remove('hidden'); hide.classList.add('hidden'); }
+    });
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value;
+      const settings = getSettings();
+      const errEl = document.getElementById('error-msg');
+      if (u === 'admin' && p === settings.adminPassword) {
+        sessionStorage.setItem('nh_admin_auth', '1');
+        window.location.href = 'index.html';
+      } else {
+        errEl.textContent = 'Foydalanuvchi nomi yoki parol noto\'g\'ri.';
+        errEl.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

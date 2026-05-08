@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Savat — Novus Homme</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{cormorant:["'Cormorant Garamond'","serif"]}}}}</script>
+  <style>
+    .font-cormorant{font-family:'Cormorant Garamond',serif;}
+    .quick-add{transform:translateY(100%);opacity:0;transition:all .3s;}
+    .product-card:hover .quick-add{transform:translateY(0);opacity:1;}
+    .product-card:hover .wishlist-btn{opacity:1;}
+    .wishlist-btn{opacity:0;transition:opacity .2s;}
+    .qty-input::-webkit-inner-spin-button,.qty-input::-webkit-outer-spin-button{-webkit-appearance:none;}
+    .cart-item{animation:fadeIn .3s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  </style>
+</head>
+<body class="bg-white text-[#1A1A1A]">
+
+<!-- HEADER -->
+<header id="header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-20">
+      <a href="index.html" class="flex flex-col leading-none">
+        <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[22px] font-medium">NOVUS</span>
+        <span class="tracking-[0.4em] text-[#C9A96E] text-[9px] font-medium">HOMME</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-8">
+        <a href="index.html" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Bosh sahifa</a>
+        <a href="category.html" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Kolleksiyalar</a>
+        <a href="category.html?cat=shirts" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Ko'ylaklar</a>
+        <a href="category.html?cat=jackets" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Kurtkalar</a>
+        <a href="category.html?cat=trousers" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Shimlar</a>
+        <a href="category.html?cat=accessories" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Aksessuarlar</a>
+      </nav>
+      <div class="flex items-center gap-5">
+        <a href="search.html" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </a>
+        <a href="#" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </a>
+        <a href="cart.html" class="relative text-[#C9A96E]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span id="cart-count-header" class="absolute -top-1.5 -right-1.5 bg-[#C9A96E] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-semibold">0</span>
+        </a>
+        <button id="mobile-toggle" class="lg:hidden text-[#1A1A1A] ml-1">
+          <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          <svg id="icon-close" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-0 z-40 bg-white translate-x-full transition-transform duration-300" style="top:64px">
+  <nav class="flex flex-col px-8 pt-8 gap-6">
+    <a href="index.html" class="text-sm tracking-widest uppercase text-[#1A1A1A] border-b border-gray-100 pb-4 font-medium">Bosh sahifa</a>
+    <a href="category.html" class="text-sm tracking-widest uppercase text-[#1A1A1A] border-b border-gray-100 pb-4 font-medium">Kolleksiyalar</a>
+    <a href="category.html?cat=shirts" class="text-sm tracking-widest uppercase text-[#1A1A1A] border-b border-gray-100 pb-4 font-medium">Ko'ylaklar</a>
+    <a href="category.html?cat=jackets" class="text-sm tracking-widest uppercase text-[#1A1A1A] border-b border-gray-100 pb-4 font-medium">Kurtkalar</a>
+    <a href="category.html?cat=trousers" class="text-sm tracking-widest uppercase text-[#1A1A1A] border-b border-gray-100 pb-4 font-medium">Shimlar</a>
+    <a href="category.html?cat=accessories" class="text-sm tracking-widest uppercase text-[#1A1A1A] border-b border-gray-100 pb-4 font-medium">Aksessuarlar</a>
+  </nav>
+</div>
+
+<div class="pt-16 lg:pt-20 min-h-screen">
+
+  <!-- Page Header -->
+  <div class="bg-[#F5F5F3] py-10 lg:py-14 border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center gap-2 mb-4">
+        <a href="index.html" class="text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors text-[11px]">Bosh sahifa</a>
+        <span class="text-gray-300 text-[11px]">/</span>
+        <span class="text-[#C9A96E] text-[11px]">Xarid Savati</span>
+      </div>
+      <h1 class="font-cormorant text-[#1A1A1A] font-normal" style="font-size:clamp(28px,4vw,48px)">
+        Xarid Savati <span id="header-count" class="text-[#C9A96E] font-normal italic"></span>
+      </h1>
+    </div>
+  </div>
+
+  <!-- Cart Content -->
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-10 lg:py-16">
+
+    <!-- EMPTY STATE -->
+    <div id="empty-cart" class="hidden text-center py-20">
+      <svg class="mx-auto mb-6 text-gray-200" xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <p class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-2">Savatingiz bo'sh</p>
+      <p class="text-[#6B6B6B] text-sm mb-8">Kolleksiyangizga mahsulotlar qo'shing.</p>
+      <a href="category.html" class="inline-flex items-center gap-2 bg-[#1A1A1A] text-white px-10 py-3.5 tracking-widest uppercase hover:bg-[#333] transition-all duration-300 text-[11px] font-semibold">
+        Xaridni Davom Ettirish
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- FILLED CART -->
+    <div id="filled-cart" class="hidden">
+      <div class="grid lg:grid-cols-[1fr_380px] gap-10 lg:gap-16 items-start">
+
+        <!-- LEFT: Items -->
+        <div>
+          <!-- Column labels -->
+          <div class="hidden md:grid grid-cols-[1fr_120px_120px_40px] gap-4 pb-4 border-b border-gray-100 mb-2">
+            <span class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold">Mahsulot</span>
+            <span class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold text-center">Miqdor</span>
+            <span class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold text-right">Jami</span>
+            <span></span>
+          </div>
+
+          <div id="cart-items-list"></div>
+
+          <!-- Actions Row -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-6 pt-6 border-t border-gray-100">
+            <a href="category.html" class="inline-flex items-center gap-2 text-[#1A1A1A] hover:text-[#C9A96E] transition-colors text-xs tracking-widest uppercase font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 12-14 0"/><path d="m12 19-7-7 7-7"/></svg>
+              Xaridni Davom Ettirish
+            </a>
+            <button onclick="clearCart()" class="text-xs tracking-widest uppercase text-[#6B6B6B] hover:text-red-500 transition-colors font-medium border-b border-gray-200 hover:border-red-400 pb-0.5">
+              Savatni Tozalash
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Summary -->
+        <div class="bg-[#F5F5F3] p-7 lg:p-8 sticky top-28">
+          <h3 class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-7">Buyurtma Xulosasi</h3>
+
+          <div class="space-y-3 pb-6 border-b border-gray-200">
+            <div class="flex justify-between text-sm">
+              <span class="text-[#6B6B6B]">Jami summa</span>
+              <span id="subtotal" class="text-[#1A1A1A] font-medium"></span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-[#6B6B6B]">Yetkazib berish</span>
+              <span id="shipping-text" class="text-[#1A1A1A] font-medium"></span>
+            </div>
+            <div id="discount-row" class="hidden flex justify-between text-sm">
+              <span class="text-[#C9A96E]">Promo chegirma</span>
+              <span id="discount-amount" class="text-[#C9A96E] font-medium"></span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-baseline py-5 border-b border-gray-200 mb-6">
+            <span class="text-xs tracking-widest uppercase font-semibold">Umumiy</span>
+            <span id="total-price" class="font-cormorant text-[#1A1A1A] font-normal" style="font-size:24px"></span>
+          </div>
+
+          <!-- Promo Code -->
+          <div class="mb-6">
+            <p class="text-[10px] tracking-widest uppercase font-semibold text-[#1A1A1A] mb-3">Promo Kod</p>
+            <div class="flex gap-0">
+              <input id="promo-input" type="text" placeholder="Kodni kiriting" class="flex-1 border border-gray-200 bg-white text-[#1A1A1A] placeholder:text-gray-300 px-4 py-3 outline-none focus:border-[#C9A96E] transition-colors text-xs uppercase tracking-widest" />
+              <button onclick="applyPromo()" class="bg-[#1A1A1A] text-white px-5 py-3 text-[10px] tracking-widest uppercase font-semibold hover:bg-[#333] transition-colors flex-shrink-0">Qo'llash</button>
+            </div>
+            <p id="promo-msg" class="text-[11px] mt-2 hidden"></p>
+          </div>
+
+          <!-- Checkout CTA -->
+          <button class="w-full bg-[#1A1A1A] text-white py-4 tracking-widest uppercase text-[11px] font-semibold hover:bg-[#333] transition-all duration-300 mb-3 flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            To'lovga O'tish
+          </button>
+          <button class="w-full border border-[#1A1A1A] text-[#1A1A1A] py-3.5 tracking-widest uppercase text-[11px] font-semibold hover:bg-[#1A1A1A] hover:text-white transition-all duration-300">
+            Tezkor Xarid
+          </button>
+
+          <!-- Trust -->
+          <div class="mt-6 space-y-2">
+            <div class="flex items-center gap-2 text-[#6B6B6B]">
+              <svg class="text-[#C9A96E] flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span class="text-xs">Xavfsiz shifrlangan to'lov</span>
+            </div>
+            <div class="flex items-center gap-2 text-[#6B6B6B]">
+              <svg class="text-[#C9A96E] flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+              <span class="text-xs">30 kun ichida bepul qaytarish</span>
+            </div>
+            <div class="flex items-center gap-2 text-[#6B6B6B]">
+              <svg class="text-[#C9A96E] flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect width="13" height="8" x="9" y="11" rx="1"/><circle cx="11" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+              <span class="text-xs"><strong class="text-[#1A1A1A]">500 000 UZS</strong> dan bepul yetkazib berish</span>
+            </div>
+          </div>
+
+          <!-- Payment icons -->
+          <div class="flex items-center gap-2 mt-5 pt-5 border-t border-gray-200">
+            <div class="bg-white border border-gray-200 rounded px-2 py-1"><span class="text-[#1A1A1A] text-[8px] font-bold">VISA</span></div>
+            <div class="bg-white border border-gray-200 rounded px-2 py-1"><span class="text-[#1A1A1A] text-[8px] font-bold">MC</span></div>
+            <div class="bg-white border border-gray-200 rounded px-2 py-1"><span class="text-[#1A1A1A] text-[8px] font-bold">UZCARD</span></div>
+            <div class="bg-white border border-gray-200 rounded px-2 py-1"><span class="text-[#1A1A1A] text-[8px] font-bold">HUMO</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- You May Also Like -->
+  <section id="also-like" class="py-16 bg-[#F9F9F7] hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <p class="text-[#C9A96E] tracking-[0.35em] uppercase mb-2 text-[10px] font-semibold">Ko'rinishni To'ldiring</p>
+        <h2 class="font-cormorant text-[#1A1A1A] font-normal" style="font-size:clamp(22px,3vw,36px)">Sizga Yoqishi Mumkin</h2>
+      </div>
+      <div id="also-like-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-10"></div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-[#1A1A1A] text-white">
+  <div class="border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-gray-500 text-xs">© 2026 Novus Homme. Barcha huquqlar himoyalangan.</p>
+        <div class="flex items-center gap-3">
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">VISA</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">MC</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">UZCARD</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">HUMO</span></div>
+        </div>
+        <div class="flex gap-5">
+          <a href="#" class="text-gray-500 hover:text-gray-300 transition-colors text-xs">Maxfiylik</a>
+          <a href="#" class="text-gray-500 hover:text-gray-300 transition-colors text-xs">Shartlar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="products.js"></script>
+<script>
+  const colorNameMap={"#FFFFFF":"Oq","#1A1A1A":"Qora","#1B2D4F":"To'q ko'k","#8B8B8B":"Kulrang","#C9A96E":"Tuya rangi","#6B7B8D":"Po'lat ko'k","#6B5A4E":"Jigarrang","#8B7355":"Xaki","#8B5A2B":"Ochiq jigarrang"};
+
+  // ---- Cart Storage ----
+  function getCart(){return JSON.parse(localStorage.getItem('nh_cart')||'[]');}
+  function saveCart(c){localStorage.setItem('nh_cart',JSON.stringify(c));}
+
+  let cart=getCart();
+  let promoApplied=false;
+  const PROMO_CODE='NOVUS10';
+  const PROMO_DISCOUNT=0.10;
+  const FREE_SHIPPING_THRESHOLD=500000;
+  const SHIPPING_COST=50000;
+
+  // ---- Helpers ----
+  function fmt(n){return new Intl.NumberFormat('uz-UZ').format(n)+' UZS';}
+
+  function cartTotal(){
+    return cart.reduce((s,i)=>{
+      const p=products.find(x=>x.id===i.productId);
+      return p?s+p.price*i.qty:s;
+    },0);
+  }
+  function totalQty(){return cart.reduce((s,i)=>s+i.qty,0);}
+
+  // ---- Render Cart ----
+  function render(){
+    const empty=document.getElementById('empty-cart');
+    const filled=document.getElementById('filled-cart');
+    const alsoLike=document.getElementById('also-like');
+    const countEl=document.getElementById('cart-count-header');
+    const headerCount=document.getElementById('header-count');
+
+    const qty=totalQty();
+    countEl.textContent=qty||0;
+    headerCount.textContent=qty?'('+qty+')':'';
+
+    if(cart.length===0){
+      empty.classList.remove('hidden');
+      filled.classList.add('hidden');
+      alsoLike.classList.add('hidden');
+      return;
+    }
+    empty.classList.add('hidden');
+    filled.classList.remove('hidden');
+    alsoLike.classList.remove('hidden');
+
+    renderItems();
+    renderSummary();
+    renderAlsoLike();
+  }
+
+  function renderItems(){
+    const list=document.getElementById('cart-items-list');
+    list.innerHTML=cart.map((item,idx)=>{
+      const p=products.find(x=>x.id===item.productId);
+      if(!p)return '';
+      const colorDot=item.color?`<span class="w-3 h-3 rounded-full border border-gray-200 inline-block flex-shrink-0" style="background:${item.color}" title="${colorNameMap[item.color]||item.color}"></span>`:'';
+      const badge=p.isSale?`<span class="bg-[#C9A96E] text-white px-1.5 py-0.5 text-[8px] tracking-widest uppercase font-semibold ml-1">Chegirma</span>`
+                  :p.isNew?`<span class="bg-[#1A1A1A] text-white px-1.5 py-0.5 text-[8px] tracking-widest uppercase font-semibold ml-1">Yangi</span>`:'';
+      return `
+        <div class="cart-item grid grid-cols-[80px_1fr] md:grid-cols-[80px_1fr_120px_120px_40px] gap-4 items-center py-5 border-b border-gray-100">
+          <!-- Image -->
+          <a href="product.html?id=${p.id}" class="block bg-[#F5F5F3] aspect-[3/4] overflow-hidden flex-shrink-0">
+            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+          </a>
+          <!-- Info -->
+          <div class="min-w-0">
+            <p class="text-[#6B6B6B] text-[10px] tracking-widest uppercase font-medium mb-0.5">${p.category}</p>
+            <a href="product.html?id=${p.id}" class="text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium text-sm leading-snug">${p.name}${badge}</a>
+            <div class="flex flex-wrap items-center gap-2 mt-2">
+              ${colorDot}
+              ${item.color?`<span class="text-[#6B6B6B] text-[10px]">${colorNameMap[item.color]||item.color}</span>`:''}
+              ${item.size?`<span class="text-[#6B6B6B] text-[10px] border border-gray-200 px-1.5 py-0.5 uppercase tracking-wide">${item.size}</span>`:''}
+            </div>
+            <p class="text-[#1A1A1A] font-semibold text-sm mt-2 md:hidden">${fmt(p.price*item.qty)}</p>
+            <!-- Mobile qty -->
+            <div class="flex items-center gap-3 mt-3 md:hidden">
+              <div class="flex items-center border border-gray-200">
+                <button onclick="changeQty(${idx},-1)" class="w-8 h-8 flex items-center justify-center text-[#1A1A1A] hover:bg-[#F5F5F3] transition-colors">−</button>
+                <span class="w-8 text-center text-xs font-medium">${item.qty}</span>
+                <button onclick="changeQty(${idx},1)" class="w-8 h-8 flex items-center justify-center text-[#1A1A1A] hover:bg-[#F5F5F3] transition-colors">+</button>
+              </div>
+              <button onclick="removeItem(${idx})" class="text-gray-300 hover:text-red-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Desktop qty -->
+          <div class="hidden md:flex items-center border border-gray-200 justify-self-center">
+            <button onclick="changeQty(${idx},-1)" class="w-9 h-9 flex items-center justify-center text-[#1A1A1A] hover:bg-[#F5F5F3] transition-colors">−</button>
+            <span class="w-9 text-center text-xs font-medium">${item.qty}</span>
+            <button onclick="changeQty(${idx},1)" class="w-9 h-9 flex items-center justify-center text-[#1A1A1A] hover:bg-[#F5F5F3] transition-colors">+</button>
+          </div>
+          <!-- Desktop price -->
+          <p class="hidden md:block text-[#1A1A1A] font-semibold text-sm text-right">${fmt(p.price*item.qty)}</p>
+          <!-- Remove -->
+          <button onclick="removeItem(${idx})" class="hidden md:flex items-center justify-center text-gray-300 hover:text-red-400 transition-colors justify-self-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderSummary(){
+    const sub=cartTotal();
+    const shipping=sub>=FREE_SHIPPING_THRESHOLD?0:SHIPPING_COST;
+    const discount=promoApplied?Math.round(sub*PROMO_DISCOUNT):0;
+    const total=sub+shipping-discount;
+
+    document.getElementById('subtotal').textContent=fmt(sub);
+    document.getElementById('shipping-text').textContent=shipping===0
+      ?'<span class="text-green-600">Free</span>'
+      :fmt(shipping);
+    document.getElementById('shipping-text').innerHTML=shipping===0
+      ?'<span class="text-green-600 font-medium">Bepul</span>'
+      :fmt(shipping);
+    document.getElementById('total-price').textContent=fmt(total);
+
+    const discRow=document.getElementById('discount-row');
+    if(promoApplied){
+      discRow.classList.remove('hidden');
+      document.getElementById('discount-amount').textContent='−'+fmt(discount);
+    } else {
+      discRow.classList.add('hidden');
+    }
+
+    // Shipping progress bar (show when not free)
+    if(shipping>0){
+      const pct=Math.min((sub/FREE_SHIPPING_THRESHOLD)*100,100);
+      const remaining=fmt(FREE_SHIPPING_THRESHOLD-sub);
+      const progressHtml=`
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <p class="text-xs text-[#6B6B6B] mb-2">Bepul yetkazish uchun yana <strong class="text-[#1A1A1A]">${remaining}</strong> qo'shing</p>
+          <div class="w-full bg-gray-100 h-1"><div class="bg-[#C9A96E] h-1 transition-all duration-500" style="width:${pct}%"></div></div>
+        </div>`;
+      const existProg=document.getElementById('shipping-progress');
+      if(existProg) existProg.outerHTML=`<div id="shipping-progress">${progressHtml}</div>`;
+      else {
+        const anchor=document.getElementById('total-price').closest('.py-5');
+        if(anchor){
+          const div=document.createElement('div');
+          div.id='shipping-progress';
+          div.innerHTML=progressHtml;
+          anchor.before(div);
+        }
+      }
+    } else {
+      const existProg=document.getElementById('shipping-progress');
+      if(existProg) existProg.remove();
+    }
+  }
+
+  function renderAlsoLike(){
+    const cartIds=cart.map(i=>i.productId);
+    const suggestions=products.filter(p=>!cartIds.includes(p.id)).slice(0,4);
+    document.getElementById('also-like-grid').innerHTML=suggestions.map(p=>renderProductCard(p)).join('');
+  }
+
+  // ---- Actions ----
+  function changeQty(idx,delta){
+    cart[idx].qty=Math.max(1,cart[idx].qty+delta);
+    saveCart(cart);
+    render();
+  }
+
+  function removeItem(idx){
+    cart.splice(idx,1);
+    saveCart(cart);
+    render();
+  }
+
+  function clearCart(){
+    cart=[];
+    saveCart(cart);
+    render();
+  }
+
+  function applyPromo(){
+    const val=document.getElementById('promo-input').value.trim().toUpperCase();
+    const msg=document.getElementById('promo-msg');
+    msg.classList.remove('hidden','text-green-600','text-red-500');
+    if(val===PROMO_CODE){
+      promoApplied=true;
+      msg.textContent='✓ 10% chegirma qo\'llanildi!';
+      msg.classList.add('text-green-600');
+    } else {
+      promoApplied=false;
+      msg.textContent='Noto\'g\'ri promo kod. NOVUS10 ni sinab ko\'ring.';
+      msg.classList.add('text-red-500');
+    }
+    msg.classList.remove('hidden');
+    renderSummary();
+  }
+
+  // ---- Init ----
+  // Demo: if cart is empty, add 2 sample items so page looks filled
+  if(cart.length===0){
+    cart=[
+      {productId:'1',color:'#FFFFFF',size:'M',qty:1},
+      {productId:'2',color:'#1A1A1A',size:'L',qty:1},
+    ];
+    saveCart(cart);
+  }
+
+  render();
+
+  // Mobile menu
+  const toggle=document.getElementById('mobile-toggle');
+  const menu=document.getElementById('mobile-menu');
+  const iconMenu=document.getElementById('icon-menu');
+  const iconClose=document.getElementById('icon-close');
+  let menuOpen=false;
+  toggle.addEventListener('click',()=>{
+    menuOpen=!menuOpen;
+    menu.style.transform=menuOpen?'translateX(0)':'translateX(100%)';
+    iconMenu.classList.toggle('hidden',menuOpen);
+    iconClose.classList.toggle('hidden',!menuOpen);
+  });
+
+  window.addEventListener('scroll',()=>{
+    document.getElementById('header').classList.toggle('shadow-sm',window.scrollY>20);
+  });
+</script>
+</body>
+</html>

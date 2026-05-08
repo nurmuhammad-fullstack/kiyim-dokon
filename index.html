@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novus Homme — Zamonaviy Erkaklar Modasi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { cormorant: ["'Cormorant Garamond'", "serif"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .font-cormorant { font-family: 'Cormorant Garamond', serif; }
+    .group:hover .group-hover-scale { transform: scale(1.05); }
+    .group:hover .group-hover-show { opacity: 1; transform: translateY(0); }
+    .quick-add { transform: translateY(100%); opacity: 0; transition: all 0.3s; }
+    .product-card:hover .quick-add { transform: translateY(0); opacity: 1; }
+    .product-card:hover .wishlist-btn { opacity: 1; }
+    .wishlist-btn { opacity: 0; transition: opacity 0.2s; }
+    .hero-img { transition: transform 0.7s; }
+    .collection-card:hover .hero-img { transform: scale(1.05); }
+  </style>
+</head>
+<body class="bg-white text-[#1A1A1A]">
+
+  <!-- HEADER -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        <!-- Logo -->
+        <a href="index.html" class="flex flex-col leading-none">
+          <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[22px] font-medium">NOVUS</span>
+          <span class="tracking-[0.4em] text-[#C9A96E] text-[9px] font-medium">HOMME</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden lg:flex items-center gap-8">
+          <a href="index.html" class="text-xs tracking-widest uppercase text-[#C9A96E] font-medium">Bosh sahifa</a>
+          <a href="category.html" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Kolleksiyalar</a>
+          <a href="category.html?cat=shirts" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Ko'ylaklar</a>
+          <a href="category.html?cat=jackets" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Kurtkalar</a>
+          <a href="category.html?cat=trousers" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Shimlar</a>
+          <a href="category.html?cat=accessories" class="text-xs tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium">Aksessuarlar</a>
+        </nav>
+
+        <!-- Icons -->
+        <div class="flex items-center gap-5">
+          <a href="search.html" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </a>
+          <a href="#" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </a>
+          <a href="cart.html" class="relative text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="cart-badge absolute -top-1.5 -right-1.5 bg-[#1A1A1A] text-white rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-semibold">0</span>
+          </a>
+          <!-- Mobile menu button -->
+          <button id="mobile-toggle" class="lg:hidden text-[#1A1A1A] hover:text-[#C9A96E] transition-colors ml-1">
+            <svg id="icon-menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            <svg id="icon-close" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="fixed inset-0 z-40 bg-white translate-x-full transition-transform duration-300" style="top:64px">
+    <nav class="flex flex-col px-8 pt-8 gap-6">
+      <a href="index.html" class="text-sm tracking-widest uppercase text-[#C9A96E] font-medium border-b border-gray-100 pb-4">Bosh sahifa</a>
+      <a href="category.html" class="text-sm tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium border-b border-gray-100 pb-4">Kolleksiyalar</a>
+      <a href="category.html?cat=shirts" class="text-sm tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium border-b border-gray-100 pb-4">Ko'ylaklar</a>
+      <a href="category.html?cat=jackets" class="text-sm tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium border-b border-gray-100 pb-4">Kurtkalar</a>
+      <a href="category.html?cat=trousers" class="text-sm tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium border-b border-gray-100 pb-4">Shimlar</a>
+      <a href="category.html?cat=accessories" class="text-sm tracking-widest uppercase text-[#1A1A1A] hover:text-[#C9A96E] transition-colors font-medium border-b border-gray-100 pb-4">Aksessuarlar</a>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <section class="relative overflow-hidden" style="height:100vh; min-height:600px; max-height:900px;">
+    <img
+      src="https://images.unsplash.com/photo-1775036422790-ebdcede0ebef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
+      alt="Hero"
+      class="w-full h-full object-cover object-center"
+    />
+    <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent"></div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+        <div class="max-w-lg">
+          <p class="text-[#C9A96E] tracking-[0.4em] uppercase mb-4 text-[11px] font-semibold">Bahor / Yoz 2026</p>
+          <h1 class="font-cormorant text-white leading-tight mb-2 font-normal" style="font-size:clamp(42px,7vw,80px)">Abadiy</h1>
+          <h1 class="font-cormorant text-white mb-6 font-normal italic" style="font-size:clamp(42px,7vw,80px)">Erkaklar Uslubi</h1>
+          <p class="text-white/75 mb-8 leading-relaxed text-sm" style="max-width:380px">
+            Zamonaviy jentlmen uchun yaratilgan premium klassikani kashf eting. Har bir buyum abadiy nafosatning timsolidir.
+          </p>
+          <div class="flex flex-wrap items-center gap-4">
+            <a href="category.html" class="inline-flex items-center gap-2 bg-white text-[#1A1A1A] px-8 py-3.5 tracking-widest uppercase hover:bg-[#C9A96E] hover:text-white transition-all duration-300 text-[11px] font-semibold">
+              Hozir Xarid Qiling
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="category.html" class="inline-flex items-center gap-2 text-white border-b border-white/40 hover:border-[#C9A96E] hover:text-[#C9A96E] transition-all pb-0.5 text-[11px] font-medium tracking-[0.15em]">
+              Lookbookni Ko'rish
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <div class="w-px h-12 bg-gradient-to-b from-transparent to-white/40"></div>
+      <span class="text-white/50 tracking-widest uppercase text-[9px]">Scroll</span>
+    </div>
+  </section>
+
+  <!-- Brand Values Strip -->
+  <section class="bg-[#1A1A1A] py-4">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-16">
+        <span class="text-white/60 tracking-widest uppercase text-[9px] font-medium">500 000 UZS dan Bepul Yetkazib Berish</span>
+        <span class="text-white/60 tracking-widest uppercase text-[9px] font-medium">Premium Matolar</span>
+        <span class="text-white/60 tracking-widest uppercase text-[9px] font-medium">Oson Qaytarish · 30 Kun</span>
+        <span class="text-white/60 tracking-widest uppercase text-[9px] font-medium">Xavfsiz To'lov</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Collections Grid -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-12">
+        <div>
+          <p class="text-[#C9A96E] tracking-[0.35em] uppercase mb-3 text-[10px] font-semibold">Siz Uchun Tanlangan</p>
+          <h2 class="font-cormorant text-[#1A1A1A] leading-tight font-normal" style="font-size:clamp(28px,4vw,48px)">Kolleksiya Bo'yicha Xarid</h2>
+        </div>
+        <a href="category.html" class="hidden md:flex items-center gap-2 text-[#1A1A1A] hover:text-[#C9A96E] transition-colors text-[11px] font-medium tracking-[0.15em]">
+          Barcha Kolleksiyalar
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+        <!-- Collection Card 1 -->
+        <a href="category.html" class="collection-card group relative overflow-hidden aspect-[3/4] block">
+          <img src="https://images.unsplash.com/photo-1775036422790-ebdcede0ebef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" alt="Yangi Kelganlar" class="hero-img w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="text-[#C9A96E] tracking-[0.3em] uppercase mb-1 text-[9px] font-semibold">Eng yangi mahsulotlar</p>
+            <h3 class="font-cormorant text-white mb-3 font-normal text-[22px]">Yangi Kelganlar</h3>
+            <span class="inline-flex items-center gap-1.5 text-white/70 group-hover:text-[#C9A96E] transition-colors text-[10px] font-medium tracking-[0.2em]">
+              Xarid Qiling
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+        <!-- Collection Card 2 -->
+        <a href="category.html?cat=shirts" class="collection-card group relative overflow-hidden aspect-[3/4] block">
+          <img src="https://images.unsplash.com/photo-1760128761565-c0d779481070?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" alt="Shirts" class="hero-img w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="text-[#C9A96E] tracking-[0.3em] uppercase mb-1 text-[9px] font-semibold">Nafis ko'ylaklar</p>
+            <h3 class="font-cormorant text-white mb-3 font-normal text-[22px]">Ko'ylaklar</h3>
+            <span class="inline-flex items-center gap-1.5 text-white/70 group-hover:text-[#C9A96E] transition-colors text-[10px] font-medium tracking-[0.2em]">
+              Xarid Qiling
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+        <!-- Collection Card 3 -->
+        <a href="category.html?cat=jackets" class="collection-card group relative overflow-hidden aspect-[3/4] block">
+          <img src="https://images.unsplash.com/photo-1754485115876-9221149ccc19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" alt="Kurtkalar" class="hero-img w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="text-[#C9A96E] tracking-[0.3em] uppercase mb-1 text-[9px] font-semibold">Ajoyib tashqi kiyimlar</p>
+            <h3 class="font-cormorant text-white mb-3 font-normal text-[22px]">Kurtkalar</h3>
+            <span class="inline-flex items-center gap-1.5 text-white/70 group-hover:text-[#C9A96E] transition-colors text-[10px] font-medium tracking-[0.2em]">
+              Xarid Qiling
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+        <!-- Collection Card 4 -->
+        <a href="category.html?cat=trousers" class="collection-card group relative overflow-hidden aspect-[3/4] block">
+          <img src="https://images.unsplash.com/photo-1760433468572-44d1cf0b8641?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600" alt="Shimlar" class="hero-img w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5">
+            <p class="text-[#C9A96E] tracking-[0.3em] uppercase mb-1 text-[9px] font-semibold">Mukammal tikuvchilik</p>
+            <h3 class="font-cormorant text-white mb-3 font-normal text-[22px]">Shimlar</h3>
+            <span class="inline-flex items-center gap-1.5 text-white/70 group-hover:text-[#C9A96E] transition-colors text-[10px] font-medium tracking-[0.2em]">
+              Xarid Qiling
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Editorial Banner -->
+  <section class="relative overflow-hidden bg-[#F5F5F3] py-20 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <p class="text-[#C9A96E] tracking-[0.35em] uppercase mb-4 text-[10px] font-semibold">Bizning Falsafamiz</p>
+          <h2 class="font-cormorant text-[#1A1A1A] mb-6 leading-tight font-normal" style="font-size:clamp(30px,4vw,52px)">
+            Ongli<br /><span class="italic">Kiyining</span>
+          </h2>
+          <p class="text-[#6B6B6B] mb-4 leading-relaxed text-sm" style="max-width:420px">
+            Novus Homme'da biz kiyim-kechak faqat kiyiladigan narsa emas, balki o'zingizni tutish uslubingiz deb hisoblaymiz. Har bir buyum sifatni miqdordan ustun qo'yadigan erkak uchun yaratilgan.
+          </p>
+          <p class="text-[#6B6B6B] mb-8 leading-relaxed text-sm" style="max-width:420px">
+            Eng yaxshi o'zbek hunarmandchiligidan tortib xalqaro premium matolatigacha — har bir kiyim uzoq xizmat qilish uchun yaratilgan.
+          </p>
+          <a href="category.html" class="inline-flex items-center gap-2 text-[#1A1A1A] border-b border-[#1A1A1A] hover:border-[#C9A96E] hover:text-[#C9A96E] transition-all pb-0.5 text-[11px] font-semibold tracking-[0.2em]">
+            KO'PROQ BILISH
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1589270216117-7972b3082c7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800" alt="Style editorial" class="w-full object-cover aspect-[4/5]" />
+          <div class="absolute -bottom-5 -left-5 hidden lg:block bg-white p-5 shadow-lg">
+            <p class="text-[#C9A96E] tracking-widest uppercase mb-1 text-[9px] font-semibold">Tashkil topgan</p>
+            <p class="font-cormorant text-[#1A1A1A] font-normal text-[32px]">2018</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <p class="text-[#C9A96E] tracking-[0.35em] uppercase mb-3 text-[10px] font-semibold">Maxsus Tanlov</p>
+        <h2 class="font-cormorant text-[#1A1A1A] font-normal" style="font-size:clamp(28px,4vw,48px)">Tavsiya Etilgan Mahsulotlar</h2>
+      </div>
+      <div id="featured-products" class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-10"></div>
+      <div class="text-center mt-14">
+        <a href="category.html" class="inline-flex items-center gap-3 border border-[#1A1A1A] text-[#1A1A1A] px-10 py-3.5 tracking-widest uppercase hover:bg-[#1A1A1A] hover:text-white transition-all duration-300 text-[11px] font-semibold">
+          Barcha Mahsulotlarni Ko'rish
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="bg-[#F5F5F3] py-20">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+      <p class="text-[#C9A96E] tracking-[0.35em] uppercase mb-8 text-[10px] font-semibold">Mijozlarimiz Fikri</p>
+      <blockquote class="font-cormorant text-[#1A1A1A] mb-8 leading-relaxed font-normal italic" style="font-size:clamp(20px,3vw,30px)">
+        "Novus Homme garderobimni qayta shakllantirdi. Sifati tengsiz — har bir chok, har bir mato hunarmandchilik haqida hikoya aytadi."
+      </blockquote>
+      <p class="text-[#6B6B6B] tracking-widest uppercase text-[10px] font-semibold">— Timur B., Toshkent</p>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="bg-[#1A1A1A] py-16 lg:py-20">
+    <div class="max-w-xl mx-auto px-6 text-center">
+      <p class="text-[#C9A96E] tracking-[0.35em] uppercase mb-3 text-[10px] font-semibold">Yangilikdan Xabardor Bo'ling</p>
+      <h2 class="font-cormorant text-white mb-3 font-normal" style="font-size:clamp(24px,4vw,40px)">Doiramizga Qo'shiling</h2>
+      <p class="text-white/50 mb-8 text-sm">Yangi kelganlar, maxsus takliflar va uslub bo'yicha qo'llanmalar — to'g'ridan-to'g'ri pochtangizga.</p>
+      <div class="flex gap-0">
+        <input type="email" placeholder="Email manzilingiz" class="flex-1 bg-white/10 border border-white/20 text-white placeholder:text-white/30 px-5 py-3.5 outline-none focus:border-[#C9A96E] transition-colors text-sm" />
+        <button class="bg-[#C9A96E] text-white px-6 py-3.5 tracking-widest uppercase hover:bg-[#B8934A] transition-colors flex-shrink-0 text-[10px] font-semibold">Obuna Bo'lish</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#1A1A1A] text-white">
+    <div class="border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <!-- Brand -->
+          <div>
+            <div class="flex flex-col leading-none mb-4">
+              <span class="font-cormorant tracking-[0.3em] text-white uppercase text-[24px] font-medium">NOVUS</span>
+              <span class="tracking-[0.5em] text-[#C9A96E] text-[9px] font-medium">HOMME</span>
+            </div>
+            <p class="text-gray-400 text-xs leading-relaxed mb-5">Zamonaviy jentlmen uchun abadiy nafosot. Uzoq muddatli uslub uchun yaratilgan premium klassik erkaklar kiyimi.</p>
+            <div class="flex gap-4">
+              <a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+              </a>
+            </div>
+          </div>
+          <!-- Navigate -->
+          <div>
+            <h4 class="text-xs tracking-[0.2em] uppercase text-white mb-5 font-semibold">Navigatsiya</h4>
+            <ul class="space-y-3">
+              <li><a href="index.html" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Bosh sahifa</a></li>
+              <li><a href="category.html" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Do'kon</a></li>
+              <li><a href="category.html" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Kolleksiyalar</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Biz haqimizda</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Aloqa</a></li>
+            </ul>
+          </div>
+          <!-- Collections -->
+          <div>
+            <h4 class="text-xs tracking-[0.2em] uppercase text-white mb-5 font-semibold">Kolleksiyalar</h4>
+            <ul class="space-y-3">
+              <li><a href="category.html" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Yangi Kelganlar</a></li>
+              <li><a href="category.html?cat=shirts" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Ko'ylaklar</a></li>
+              <li><a href="category.html?cat=jackets" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Kurtkalar</a></li>
+              <li><a href="category.html?cat=trousers" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Shimlar</a></li>
+              <li><a href="category.html?cat=accessories" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Aksessuarlar</a></li>
+            </ul>
+          </div>
+          <!-- Support -->
+          <div>
+            <h4 class="text-xs tracking-[0.2em] uppercase text-white mb-5 font-semibold">Yordam</h4>
+            <ul class="space-y-3 mb-6">
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">O'lcham Jadvali</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Yetkazish va Qaytarish</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Parvarish Ko'rsatmalari</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Buyurtmani Kuzatish</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-[#C9A96E] transition-colors text-xs">Ko'p So'raladigan Savollar</a></li>
+            </ul>
+            <p class="text-[10px] tracking-widest uppercase text-gray-500 mb-2">Bog'lanish</p>
+            <a href="mailto:hello@novushomme.uz" class="text-gray-400 text-xs hover:text-[#C9A96E] transition-colors">hello@novushomme.uz</a>
+            <p class="text-gray-400 text-xs mt-1">+998 90 123 45 67</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-gray-500 text-xs">© 2026 Novus Homme. Barcha huquqlar himoyalangan.</p>
+        <div class="flex items-center gap-3">
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">VISA</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">MC</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">AMEX</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">UZCARD</span></div>
+          <div class="bg-white/10 rounded px-2.5 py-1 border border-white/10"><span class="text-gray-300 text-[9px] font-semibold">HUMO</span></div>
+        </div>
+        <div class="flex gap-5">
+          <a href="#" class="text-gray-500 hover:text-gray-300 transition-colors text-xs">Maxfiylik</a>
+          <a href="#" class="text-gray-500 hover:text-gray-300 transition-colors text-xs">Shartlar</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="products.js"></script>
+  <script>
+    // Mobile menu toggle
+    const toggle = document.getElementById('mobile-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const iconMenu = document.getElementById('icon-menu');
+    const iconClose = document.getElementById('icon-close');
+    let menuOpen = false;
+
+    toggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      menu.style.transform = menuOpen ? 'translateX(0)' : 'translateX(100%)';
+      iconMenu.classList.toggle('hidden', menuOpen);
+      iconClose.classList.toggle('hidden', !menuOpen);
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 20) {
+        header.classList.add('shadow-sm');
+      } else {
+        header.classList.remove('shadow-sm');
+      }
+    });
+
+    // Render featured products (first 6)
+    const container = document.getElementById('featured-products');
+    const featured = products.slice(0, 6);
+    container.innerHTML = featured.map(p => renderProductCard(p)).join('');
+  </script>
+</body>
+</html>

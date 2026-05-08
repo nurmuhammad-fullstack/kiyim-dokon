@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Novus Homme Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{cormorant:["'Cormorant Garamond'","serif"]}}}}</script>
+  <style>
+    .font-cormorant{font-family:'Cormorant Garamond',serif;}
+    body{background:#F9F9F7;}
+  </style>
+</head>
+<body class="text-[#1A1A1A]">
+
+<!-- SIDEBAR -->
+<aside class="fixed left-0 top-0 bottom-0 w-60 bg-white border-r border-gray-100 flex flex-col z-40">
+  <div class="px-6 py-5 border-b border-gray-100">
+    <div class="flex flex-col leading-none">
+      <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[20px] font-medium">NOVUS</span>
+      <span class="tracking-[0.5em] text-[#C9A96E] text-[9px] font-semibold">HOMME · ADMIN</span>
+    </div>
+  </div>
+  <nav class="flex-1 py-4 overflow-y-auto">
+    <p class="px-6 py-1 text-[9px] tracking-widest uppercase text-gray-400 font-semibold mb-1">Asosiy</p>
+    <a href="index.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <p class="px-6 py-1 text-[9px] tracking-widest uppercase text-gray-400 font-semibold mb-1 mt-3">Do'kon</p>
+    <a href="products.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Mahsulotlar
+    </a>
+    <a href="orders.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Buyurtmalar
+      <span id="order-badge" class="hidden ml-auto bg-red-500 text-white text-[9px] rounded-full w-4 h-4 flex items-center justify-center font-bold"></span>
+    </a>
+    <a href="categories.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Kategoriyalar
+    </a>
+    <a href="promo.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Promo Kodlar
+    </a>
+    <p class="px-6 py-1 text-[9px] tracking-widest uppercase text-gray-400 font-semibold mb-1 mt-3">Tizim</p>
+    <a href="settings.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Sozlamalar
+    </a>
+  </nav>
+  <div class="border-t border-gray-100 p-4 space-y-2">
+    <a href="../index.html" target="_blank" class="flex items-center justify-center gap-2 text-[10px] text-[#6B6B6B] hover:text-[#C9A96E] tracking-widest uppercase transition-colors">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Do'konni Ko'rish
+    </a>
+    <button onclick="logout()" class="w-full text-[10px] tracking-widest uppercase text-red-500 hover:text-red-700 font-semibold transition-colors py-1">Chiqish</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="ml-60 min-h-screen">
+  <!-- Topbar -->
+  <div class="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+    <div>
+      <h1 class="font-cormorant text-[#1A1A1A] font-normal text-2xl">Dashboard</h1>
+      <p class="text-[#6B6B6B] text-[11px]">Xush kelibsiz, umumiy holat</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-[11px] text-[#6B6B6B]" id="today-date"></span>
+      <div class="w-8 h-8 bg-[#1A1A1A] rounded-full flex items-center justify-center">
+        <span class="text-white text-[11px] font-bold">A</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-8">
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <div class="bg-white border border-gray-100 rounded-lg p-5">
+        <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold mb-3">Umumiy Savdo</p>
+        <p id="kpi-revenue" class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-1"></p>
+        <p class="text-[10px] text-green-600 font-medium">↑ Bu oy</p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-lg p-5">
+        <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold mb-3">Buyurtmalar</p>
+        <p id="kpi-orders" class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-1"></p>
+        <p id="kpi-pending" class="text-[10px] text-orange-500 font-medium"></p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-lg p-5">
+        <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold mb-3">Mahsulotlar</p>
+        <p id="kpi-products" class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-1"></p>
+        <p id="kpi-low" class="text-[10px] text-red-500 font-medium"></p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-lg p-5">
+        <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] font-semibold mb-3">O'rtacha Buyurtma</p>
+        <p id="kpi-avg" class="font-cormorant text-[#1A1A1A] font-normal text-2xl mb-1"></p>
+        <p class="text-[10px] text-[#6B6B6B] font-medium">Yetkazilgan buyurtmalar</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Recent Orders -->
+      <div class="lg:col-span-2 bg-white border border-gray-100 rounded-lg">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 class="text-sm font-semibold text-[#1A1A1A]">Oxirgi Buyurtmalar</h2>
+          <a href="orders.html" class="text-[10px] tracking-widest uppercase text-[#C9A96E] hover:text-[#B8934A] font-semibold transition-colors">Barchasini Ko'rish →</a>
+        </div>
+        <div id="recent-orders" class="divide-y divide-gray-50"></div>
+      </div>
+
+      <!-- Stock Alerts + Top Products -->
+      <div class="space-y-6">
+        <!-- Stock Alerts -->
+        <div class="bg-white border border-gray-100 rounded-lg">
+          <div class="px-5 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-[#1A1A1A]">Kam Qolgan Zaxira</h2>
+          </div>
+          <div id="stock-alerts" class="divide-y divide-gray-50"></div>
+        </div>
+
+        <!-- Category split -->
+        <div class="bg-white border border-gray-100 rounded-lg">
+          <div class="px-5 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-[#1A1A1A]">Kategoriyalar</h2>
+          </div>
+          <div id="cat-breakdown" class="p-5 space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="assets/admin.js"></script>
+<script>
+  requireAuth();
+
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('uz-UZ', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  const orders   = getOrders();
+  const products = getProducts();
+
+  // KPIs
+  const delivered = orders.filter(o => o.status === 'delivered');
+  const revenue   = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0);
+  const pending   = orders.filter(o => o.status === 'pending').length;
+  const lowStock  = products.filter(p => p.stock <= 10).length;
+  const avg       = delivered.length ? Math.round(delivered.reduce((s, o) => s + o.total, 0) / delivered.length) : 0;
+
+  document.getElementById('kpi-revenue').textContent  = fmt(revenue);
+  document.getElementById('kpi-orders').textContent   = orders.length + ' ta';
+  document.getElementById('kpi-pending').textContent  = pending + ' ta kutilmoqda';
+  document.getElementById('kpi-products').textContent = products.length + ' ta';
+  document.getElementById('kpi-low').textContent      = lowStock ? lowStock + ' ta kam qoldi' : 'Zaxira yaxshi';
+  document.getElementById('kpi-avg').textContent      = fmt(avg);
+
+  // Recent orders
+  const recent = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  document.getElementById('recent-orders').innerHTML = recent.map(o => `
+    <div class="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="location.href='orders.html'">
+      <div class="min-w-0">
+        <p class="text-xs font-semibold text-[#1A1A1A] truncate">${o.customer}</p>
+        <p class="text-[10px] text-[#6B6B6B]">${o.id} · ${fmtDate(o.date)}</p>
+      </div>
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <span class="text-xs font-semibold text-[#1A1A1A]">${fmt(o.total)}</span>
+        ${statusBadge(o.status)}
+      </div>
+    </div>
+  `).join('');
+
+  // Stock alerts
+  const lowItems = products.filter(p => p.stock <= 10).slice(0, 5);
+  document.getElementById('stock-alerts').innerHTML = lowItems.length
+    ? lowItems.map(p => `
+        <div class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
+          <p class="text-xs font-medium text-[#1A1A1A] truncate max-w-[130px]">${p.name}</p>
+          ${stockBadge(p.stock)}
+        </div>
+      `).join('')
+    : '<p class="px-5 py-4 text-xs text-[#6B6B6B]">Barcha mahsulotlar yetarli.</p>';
+
+  // Category breakdown
+  const catBreak = {};
+  products.forEach(p => { catBreak[p.category] = (catBreak[p.category] || 0) + 1; });
+  const total = products.length;
+  document.getElementById('cat-breakdown').innerHTML = Object.entries(catBreak).map(([cat, cnt]) => `
+    <div>
+      <div class="flex justify-between text-xs mb-1">
+        <span class="text-[#1A1A1A] font-medium">${cat}</span>
+        <span class="text-[#6B6B6B]">${cnt} ta</span>
+      </div>
+      <div class="w-full bg-gray-100 h-1.5 rounded-full">
+        <div class="bg-[#C9A96E] h-1.5 rounded-full transition-all" style="width:${Math.round(cnt/total*100)}%"></div>
+      </div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>

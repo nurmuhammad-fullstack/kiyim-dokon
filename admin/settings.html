@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sozlamalar | Novus Homme Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{cormorant:["'Cormorant Garamond'","serif"]}}}}</script>
+  <style>.font-cormorant{font-family:'Cormorant Garamond',serif;}</style>
+</head>
+<body class="bg-[#F5F5F3] min-h-screen">
+
+  <aside class="fixed left-0 top-0 bottom-0 w-60 bg-white border-r border-gray-100 flex flex-col z-40">
+    <div class="px-6 py-5 border-b border-gray-100">
+      <div class="flex flex-col leading-none">
+        <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[20px] font-medium">NOVUS</span>
+        <span class="tracking-[0.5em] text-[#C9A96E] text-[9px] font-semibold">HOMME · ADMIN</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <a href="index.html"      data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Dashboard</a>
+      <a href="products.html"   data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Mahsulotlar</a>
+      <a href="orders.html"     data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Buyurtmalar</a>
+      <a href="categories.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Kategoriyalar</a>
+      <a href="promo.html"      data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Promo Kodlar</a>
+      <a href="settings.html"   data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Sozlamalar</a>
+    </nav>
+    <div class="border-t border-gray-100 p-4">
+      <a href="../index.html" target="_blank" class="block text-center text-[10px] text-[#6B6B6B] hover:text-[#C9A96E] tracking-widest uppercase mb-3">Do'konni Ko'rish ↗</a>
+      <button onclick="logout()" class="w-full text-[10px] tracking-widest uppercase text-red-500 hover:text-red-700 font-semibold transition-colors">Chiqish</button>
+    </div>
+  </aside>
+
+  <main class="ml-60 p-8">
+    <div class="max-w-3xl mx-auto space-y-6">
+
+      <div class="mb-8">
+        <h1 class="font-cormorant text-3xl text-[#1A1A1A] font-medium">Sozlamalar</h1>
+        <p class="text-xs text-[#6B6B6B] tracking-wide mt-1">Do'kon va admin panel sozlamalari</p>
+      </div>
+
+      <!-- Store Info -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Do'kon Ma'lumotlari</h2>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Do'kon Nomi</label>
+              <input id="store-name" type="text" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Do'kon Tegi</label>
+              <input id="store-tagline" type="text" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="HOMME" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Email</label>
+              <input id="store-email" type="email" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Telefon</label>
+              <input id="store-phone" type="tel" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="+998 90 000 00 00" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Manzil</label>
+            <input id="store-address" type="text" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="Toshkent, O'zbekiston" />
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
+          <button onclick="saveStoreInfo()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors">Saqlash</button>
+        </div>
+      </div>
+
+      <!-- Shipping -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h2 class="text-xs font-semibold tracking-widests uppercase text-[#1A1A1A]">Yetkazib Berish</h2>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Yetkazib Berish Narxi (UZS)</label>
+              <input id="shipping-cost" type="number" min="0" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Bepul Yetkazish Chegarasi (UZS)</label>
+              <input id="free-shipping" type="number" min="0" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
+            </div>
+          </div>
+          <div class="bg-[#F5F5F3] border border-gray-100 px-4 py-3 text-xs text-[#6B6B6B]">
+            Masalan: Bepul yetkazish chegarasi 500 000 UZS bo'lsa, shu summadan yuqori buyurtmalarda yetkazish bepul bo'ladi.
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
+          <button onclick="saveShipping()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors">Saqlash</button>
+        </div>
+      </div>
+
+      <!-- Currency & Regional -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Valyuta va Mintaqa</h2>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Valyuta</label>
+              <select id="currency" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors">
+                <option value="UZS">UZS — O'zbek so'mi</option>
+                <option value="USD">USD — AQSh dollari</option>
+                <option value="EUR">EUR — Yevro</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Til</label>
+              <select id="lang" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors">
+                <option value="uz">O'zbek</option>
+                <option value="ru">Rus</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
+          <button onclick="saveRegional()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors">Saqlash</button>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Xavfsizlik</h2>
+        </div>
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Joriy Parol</label>
+            <input id="current-pw" type="password" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="••••••••" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Yangi Parol</label>
+              <input id="new-pw" type="password" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="••••••••" />
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Parolni Tasdiqlash</label>
+              <input id="confirm-pw" type="password" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="••••••••" />
+            </div>
+          </div>
+          <p class="text-[10px] text-[#6B6B6B]">Parol kamida 6 belgidan iborat bo'lishi kerak.</p>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
+          <button onclick="changePassword()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors">Parolni O'zgartirish</button>
+        </div>
+      </div>
+
+      <!-- Data Management -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Ma'lumotlarni Boshqarish</h2>
+        </div>
+        <div class="p-6 space-y-4">
+          <div class="flex items-center justify-between py-3 border-b border-gray-50">
+            <div>
+              <p class="text-sm font-medium text-[#1A1A1A]">Ma'lumotlarni Eksport Qilish</p>
+              <p class="text-xs text-[#6B6B6B] mt-0.5">Barcha mahsulot, buyurtma va sozlamalarni JSON formatida yuklab olish</p>
+            </div>
+            <button onclick="exportData()" class="px-4 py-2 text-[11px] tracking-widest uppercase font-semibold border border-gray-200 text-[#6B6B6B] hover:border-gray-400 hover:text-[#1A1A1A] transition-colors">Eksport</button>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-gray-50">
+            <div>
+              <p class="text-sm font-medium text-[#1A1A1A]">Ma'lumotlarni Import Qilish</p>
+              <p class="text-xs text-[#6B6B6B] mt-0.5">JSON fayldan ma'lumotlarni tiklash</p>
+            </div>
+            <label class="px-4 py-2 text-[11px] tracking-widest uppercase font-semibold border border-gray-200 text-[#6B6B6B] hover:border-gray-400 hover:text-[#1A1A1A] transition-colors cursor-pointer">
+              Import
+              <input type="file" accept=".json" class="hidden" onchange="importData(event)" />
+            </label>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <div>
+              <p class="text-sm font-medium text-red-600">Barcha Ma'lumotlarni Tozalash</p>
+              <p class="text-xs text-[#6B6B6B] mt-0.5">Barcha mahsulot, buyurtma va sozlamalarni o'chiradi. Bu amalni bekor qilib bo'lmaydi!</p>
+            </div>
+            <button onclick="resetAllData()" class="px-4 py-2 text-[11px] tracking-widest uppercase font-semibold border border-red-200 text-red-500 hover:border-red-400 hover:text-red-700 transition-colors">Tozalash</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Tizim Ma'lumotlari</h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-2 gap-y-3 text-xs">
+            <span class="text-[#6B6B6B] tracking-wide">Versiya</span>
+            <span class="text-[#1A1A1A] font-medium">1.0.0</span>
+            <span class="text-[#6B6B6B] tracking-wide">Texnologiya</span>
+            <span class="text-[#1A1A1A] font-medium">HTML + Tailwind + Vanilla JS</span>
+            <span class="text-[#6B6B6B] tracking-wide">Saqlash</span>
+            <span class="text-[#1A1A1A] font-medium">localStorage (brauzer)</span>
+            <span class="text-[#6B6B6B] tracking-wide">Autentifikatsiya</span>
+            <span class="text-[#1A1A1A] font-medium">sessionStorage</span>
+            <span class="text-[#6B6B6B] tracking-wide">LocalStorage hajmi</span>
+            <span id="storage-size" class="text-[#1A1A1A] font-medium">Hisoblanmoqda...</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="assets/admin.js"></script>
+  <script>
+    requireAuth();
+
+    function loadSettings() {
+      const s = getSettings();
+      document.getElementById('store-name').value = s.storeName || 'Novus Homme';
+      document.getElementById('store-tagline').value = s.storeTagline || 'HOMME';
+      document.getElementById('store-email').value = s.email || '';
+      document.getElementById('store-phone').value = s.phone || '';
+      document.getElementById('store-address').value = s.address || '';
+      document.getElementById('shipping-cost').value = s.shippingCost || 50000;
+      document.getElementById('free-shipping').value = s.freeShippingThreshold || 500000;
+      document.getElementById('currency').value = s.currency || 'UZS';
+      document.getElementById('lang').value = s.lang || 'uz';
+      calcStorageSize();
+    }
+
+    function saveStoreInfo() {
+      const s = getSettings();
+      s.storeName = document.getElementById('store-name').value.trim() || 'Novus Homme';
+      s.storeTagline = document.getElementById('store-tagline').value.trim() || 'HOMME';
+      s.email = document.getElementById('store-email').value.trim();
+      s.phone = document.getElementById('store-phone').value.trim();
+      s.address = document.getElementById('store-address').value.trim();
+      saveSettings(s);
+      toast("Do'kon ma'lumotlari saqlandi");
+    }
+
+    function saveShipping() {
+      const cost = parseInt(document.getElementById('shipping-cost').value);
+      const free = parseInt(document.getElementById('free-shipping').value);
+      if (isNaN(cost) || cost < 0) { toast("To'g'ri narx kiriting", 'error'); return; }
+      if (isNaN(free) || free < 0) { toast("To'g'ri chegara kiriting", 'error'); return; }
+      const s = getSettings();
+      s.shippingCost = cost;
+      s.freeShippingThreshold = free;
+      saveSettings(s);
+      toast("Yetkazib berish sozlamalari saqlandi");
+    }
+
+    function saveRegional() {
+      const s = getSettings();
+      s.currency = document.getElementById('currency').value;
+      s.lang = document.getElementById('lang').value;
+      saveSettings(s);
+      toast("Mintaqa sozlamalari saqlandi");
+    }
+
+    function changePassword() {
+      const current = document.getElementById('current-pw').value;
+      const newPw = document.getElementById('new-pw').value;
+      const confirm = document.getElementById('confirm-pw').value;
+      const s = getSettings();
+
+      if (!current) { toast("Joriy parolni kiriting", 'error'); return; }
+      if (current !== s.adminPassword) { toast("Joriy parol noto'g'ri", 'error'); return; }
+      if (!newPw || newPw.length < 6) { toast("Yangi parol kamida 6 belgidan iborat bo'lishi kerak", 'error'); return; }
+      if (newPw !== confirm) { toast("Parollar mos kelmadi", 'error'); return; }
+
+      s.adminPassword = newPw;
+      saveSettings(s);
+      document.getElementById('current-pw').value = '';
+      document.getElementById('new-pw').value = '';
+      document.getElementById('confirm-pw').value = '';
+      toast("Parol muvaffaqiyatli o'zgartirildi");
+    }
+
+    function exportData() {
+      const data = {
+        exportedAt: new Date().toISOString(),
+        version: '1.0.0',
+        products: getProducts(),
+        orders: getOrders(),
+        categories: getCategories(),
+        promos: getPromos(),
+        settings: (() => { const s = getSettings(); const copy = {...s}; delete copy.adminPassword; return copy; })()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `novus-admin-export-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("Ma'lumotlar eksport qilindi");
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          confirmModal("Ma'lumotlarni import qilmoqchimisiz? Mavjud ma'lumotlar o'chiriladi.", () => {
+            if (data.products) localStorage.setItem('nh_products', JSON.stringify(data.products));
+            if (data.orders) localStorage.setItem('nh_orders', JSON.stringify(data.orders));
+            if (data.categories) localStorage.setItem('nh_categories', JSON.stringify(data.categories));
+            if (data.promos) localStorage.setItem('nh_promos', JSON.stringify(data.promos));
+            if (data.settings) {
+              const s = getSettings();
+              const imported = { ...s, ...data.settings };
+              saveSettings(imported);
+            }
+            toast("Ma'lumotlar import qilindi");
+            loadSettings();
+          });
+        } catch {
+          toast("Fayl noto'g'ri formatda", 'error');
+        }
+        event.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    function resetAllData() {
+      confirmModal("DIQQAT! Barcha mahsulot, buyurtma va sozlamalarni o'chirasiz. Bu amalni bekor qilib bo'lmaydi. Davom etasizmi?", () => {
+        ['nh_products', 'nh_orders', 'nh_categories', 'nh_promos', 'nh_settings'].forEach(k => localStorage.removeItem(k));
+        toast("Barcha ma'lumotlar tozalandi. Sahifa yangilanmoqda...");
+        setTimeout(() => window.location.reload(), 1500);
+      });
+    }
+
+    function calcStorageSize() {
+      let total = 0;
+      for (let k in localStorage) {
+        if (localStorage.hasOwnProperty(k)) {
+          total += (localStorage[k].length + k.length) * 2;
+        }
+      }
+      const kb = (total / 1024).toFixed(1);
+      document.getElementById('storage-size').textContent = `${kb} KB / ~5 MB`;
+    }
+
+    loadSettings();
+  </script>
+</body>
+</html>

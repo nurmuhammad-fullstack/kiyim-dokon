@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Promo Kodlar | Novus Homme Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <script>tailwind.config={theme:{extend:{fontFamily:{cormorant:["'Cormorant Garamond'","serif"]}}}}</script>
+  <style>
+    .font-cormorant{font-family:'Cormorant Garamond',serif;}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:50;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+  </style>
+</head>
+<body class="bg-[#F5F5F3] min-h-screen">
+
+  <aside class="fixed left-0 top-0 bottom-0 w-60 bg-white border-r border-gray-100 flex flex-col z-40">
+    <div class="px-6 py-5 border-b border-gray-100">
+      <div class="flex flex-col leading-none">
+        <span class="font-cormorant tracking-[0.3em] text-[#1A1A1A] uppercase text-[20px] font-medium">NOVUS</span>
+        <span class="tracking-[0.5em] text-[#C9A96E] text-[9px] font-semibold">HOMME · ADMIN</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <a href="index.html"      data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Dashboard</a>
+      <a href="products.html"   data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Mahsulotlar</a>
+      <a href="orders.html"     data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Buyurtmalar</a>
+      <a href="categories.html" data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Kategoriyalar</a>
+      <a href="promo.html"      data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Promo Kodlar</a>
+      <a href="settings.html"   data-nav class="flex items-center gap-3 px-6 py-3 text-xs font-semibold tracking-wide text-[#6B6B6B] hover:bg-gray-50 hover:text-[#1A1A1A] transition-colors">Sozlamalar</a>
+    </nav>
+    <div class="border-t border-gray-100 p-4">
+      <a href="../index.html" target="_blank" class="block text-center text-[10px] text-[#6B6B6B] hover:text-[#C9A96E] tracking-widest uppercase mb-3">Do'konni Ko'rish ↗</a>
+      <button onclick="logout()" class="w-full text-[10px] tracking-widest uppercase text-red-500 hover:text-red-700 font-semibold transition-colors">Chiqish</button>
+    </div>
+  </aside>
+
+  <main class="ml-60 p-8">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h1 class="font-cormorant text-3xl text-[#1A1A1A] font-medium">Promo Kodlar</h1>
+          <p class="text-xs text-[#6B6B6B] tracking-wide mt-1">Chegirma kodlarini boshqarish</p>
+        </div>
+        <button onclick="openAddModal()" class="bg-[#1A1A1A] text-white px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold hover:bg-[#333] transition-colors">
+          + Kod Qo'shish
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-4 gap-4 mb-8" id="stats-row"></div>
+
+      <!-- Table -->
+      <div class="bg-white border border-gray-100 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h2 class="text-xs font-semibold tracking-widest uppercase text-[#1A1A1A]">Barcha Promo Kodlar</h2>
+          <div class="flex items-center gap-3">
+            <select id="filter-status" onchange="renderTable()" class="text-xs border border-gray-200 px-3 py-1.5 outline-none focus:border-[#C9A96E] text-[#6B6B6B]">
+              <option value="all">Barcha holat</option>
+              <option value="active">Faol</option>
+              <option value="inactive">Nofaol</option>
+            </select>
+          </div>
+        </div>
+        <table class="w-full">
+          <thead>
+            <tr class="border-b border-gray-100 bg-gray-50">
+              <th class="text-left px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Kod</th>
+              <th class="text-left px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Turi</th>
+              <th class="text-center px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Chegirma</th>
+              <th class="text-center px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Foydalanish</th>
+              <th class="text-center px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Muddat</th>
+              <th class="text-center px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Holat</th>
+              <th class="text-right px-6 py-3 text-[10px] font-semibold tracking-widest uppercase text-[#6B6B6B]">Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="promo-table-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Add/Edit Modal -->
+  <div id="promo-modal" class="modal-overlay">
+    <div class="bg-white w-full max-w-lg mx-4 shadow-xl">
+      <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <h2 id="modal-title" class="font-cormorant text-xl text-[#1A1A1A] font-medium">Promo Kod Qo'shish</h2>
+        <button onclick="closeModal()" class="text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-5">
+        <input type="hidden" id="edit-id" />
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Promo Kod <span class="text-red-500">*</span></label>
+          <div class="flex gap-2">
+            <input id="promo-code" type="text" class="flex-1 border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors uppercase" placeholder="NOVUS10" />
+            <button type="button" onclick="generateCode()" class="px-3 py-2.5 border border-gray-200 text-xs text-[#6B6B6B] hover:border-gray-400 hover:text-[#1A1A1A] transition-colors whitespace-nowrap">Yaratish</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Chegirma Turi <span class="text-red-500">*</span></label>
+          <select id="promo-type" onchange="updateTypeUI()" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors">
+            <option value="percent">Foiz (%)</option>
+            <option value="fixed">Belgilangan summa (UZS)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2" id="discount-label">Chegirma miqdori (%) <span class="text-red-500">*</span></label>
+          <input id="promo-discount" type="number" min="1" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="10" />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Min. buyurtma (UZS)</label>
+            <input id="promo-min" type="number" min="0" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="0" />
+          </div>
+          <div>
+            <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Max foydalanish</label>
+            <input id="promo-max-uses" type="number" min="0" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" placeholder="Cheksiz" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] tracking-widest uppercase text-[#1A1A1A] font-semibold mb-2">Amal qilish muddati</label>
+          <input id="promo-expires" type="date" class="w-full border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
+          <p class="text-[10px] text-[#6B6B6B] mt-1">Bo'sh qoldirsangiz muddatsiz ishlaydi</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <input id="promo-active" type="checkbox" checked class="w-4 h-4 accent-[#C9A96E]" />
+          <label for="promo-active" class="text-sm text-[#1A1A1A]">Faol</label>
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end">
+        <button onclick="closeModal()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors border border-gray-200 hover:border-gray-400">Bekor Qilish</button>
+        <button onclick="savePromo()" class="px-5 py-2.5 text-[11px] tracking-widest uppercase font-semibold bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/admin.js"></script>
+  <script>
+    requireAuth();
+
+    let promos = [];
+    let editingId = null;
+
+    function loadPromos() {
+      promos = getPromos();
+      renderStats();
+      renderTable();
+    }
+
+    function renderStats() {
+      const now = new Date();
+      const active = promos.filter(p => p.active !== false && (!p.expires || new Date(p.expires) >= now)).length;
+      const expired = promos.filter(p => p.expires && new Date(p.expires) < now).length;
+      const totalUses = promos.reduce((s, p) => s + (p.usedCount || 0), 0);
+
+      document.getElementById('stats-row').innerHTML = `
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Jami Kodlar</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${promos.length}</p>
+        </div>
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Faol</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${active}</p>
+        </div>
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Muddati o'tgan</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${expired}</p>
+        </div>
+        <div class="bg-white border border-gray-100 p-5 shadow-sm">
+          <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Jami Foydalanish</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${totalUses}</p>
+        </div>
+      `;
+    }
+
+    function renderTable() {
+      const statusFilter = document.getElementById('filter-status').value;
+      const now = new Date();
+
+      let list = [...promos];
+      if (statusFilter === 'active') list = list.filter(p => p.active !== false && (!p.expires || new Date(p.expires) >= now));
+      if (statusFilter === 'inactive') list = list.filter(p => p.active === false || (p.expires && new Date(p.expires) < now));
+
+      const tbody = document.getElementById('promo-table-body');
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-12 text-[#6B6B6B] text-sm">Promo kodlar topilmadi</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => {
+        const isExpired = p.expires && new Date(p.expires) < now;
+        const isActive = p.active !== false && !isExpired;
+        const discountText = p.type === 'percent' ? p.discount + '%' : formatPrice(p.discount);
+        const usesText = p.maxUses ? `${p.usedCount || 0} / ${p.maxUses}` : `${p.usedCount || 0} / ∞`;
+        const expiresText = p.expires ? new Date(p.expires).toLocaleDateString('uz-UZ') : 'Muddatsiz';
+
+        return `
+          <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">
+              <code class="text-sm font-bold text-[#1A1A1A] bg-gray-100 px-2.5 py-1 rounded tracking-widest">${p.code}</code>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-xs text-[#6B6B6B]">${p.type === 'percent' ? 'Foiz' : 'Belgilangan'}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-sm font-semibold text-[#C9A96E]">${discountText}</span>
+              ${p.minOrder ? `<div class="text-[10px] text-[#6B6B6B] mt-0.5">Min: ${formatPrice(p.minOrder)}</div>` : ''}
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-xs text-[#6B6B6B]">${usesText}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-xs ${isExpired ? 'text-red-500' : 'text-[#6B6B6B]'}">${expiresText}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <button onclick="togglePromo('${p.id}')" class="inline-flex items-center px-2.5 py-1 text-[10px] font-semibold tracking-wide rounded-full transition-colors ${isActive ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
+                ${isActive ? 'Faol' : isExpired ? 'Muddati o\'tgan' : 'Nofaol'}
+              </button>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button onclick="openEditModal('${p.id}')" class="text-xs text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors px-3 py-1.5 border border-gray-200 hover:border-gray-400">Tahrirlash</button>
+                <button onclick="deletePromo('${p.id}')" class="text-xs text-red-500 hover:text-red-700 transition-colors px-3 py-1.5 border border-red-200 hover:border-red-400">O'chirish</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function formatPrice(n) {
+      return Number(n).toLocaleString('uz-UZ') + ' UZS';
+    }
+
+    function generateCode() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+      document.getElementById('promo-code').value = code;
+    }
+
+    function updateTypeUI() {
+      const type = document.getElementById('promo-type').value;
+      document.getElementById('discount-label').textContent = type === 'percent'
+        ? 'Chegirma miqdori (%)'
+        : 'Chegirma miqdori (UZS)';
+    }
+
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modal-title').textContent = "Promo Kod Qo'shish";
+      document.getElementById('edit-id').value = '';
+      document.getElementById('promo-code').value = '';
+      document.getElementById('promo-type').value = 'percent';
+      document.getElementById('promo-discount').value = '';
+      document.getElementById('promo-min').value = '';
+      document.getElementById('promo-max-uses').value = '';
+      document.getElementById('promo-expires').value = '';
+      document.getElementById('promo-active').checked = true;
+      updateTypeUI();
+      document.getElementById('promo-modal').classList.add('open');
+    }
+
+    function openEditModal(id) {
+      const p = promos.find(x => x.id === id);
+      if (!p) return;
+      editingId = id;
+      document.getElementById('modal-title').textContent = 'Promo Kodni Tahrirlash';
+      document.getElementById('edit-id').value = id;
+      document.getElementById('promo-code').value = p.code;
+      document.getElementById('promo-type').value = p.type || 'percent';
+      document.getElementById('promo-discount').value = p.discount;
+      document.getElementById('promo-min').value = p.minOrder || '';
+      document.getElementById('promo-max-uses').value = p.maxUses || '';
+      document.getElementById('promo-expires').value = p.expires || '';
+      document.getElementById('promo-active').checked = p.active !== false;
+      updateTypeUI();
+      document.getElementById('promo-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('promo-modal').classList.remove('open');
+      editingId = null;
+    }
+
+    function savePromo() {
+      const code = document.getElementById('promo-code').value.trim().toUpperCase();
+      const type = document.getElementById('promo-type').value;
+      const discount = parseFloat(document.getElementById('promo-discount').value);
+      const minOrder = parseFloat(document.getElementById('promo-min').value) || 0;
+      const maxUses = parseInt(document.getElementById('promo-max-uses').value) || 0;
+      const expires = document.getElementById('promo-expires').value;
+      const active = document.getElementById('promo-active').checked;
+
+      if (!code) { toast("Promo kodni kiriting", 'error'); return; }
+      if (!/^[A-Z0-9]+$/.test(code)) { toast("Kod faqat lotin harflari va raqamlardan iborat bo'lishi kerak", 'error'); return; }
+      if (!discount || discount <= 0) { toast("Chegirma miqdorini kiriting", 'error'); return; }
+      if (type === 'percent' && discount > 100) { toast("Foiz 100dan oshmasligi kerak", 'error'); return; }
+
+      const duplicate = promos.find(p => p.code === code && p.id !== editingId);
+      if (duplicate) { toast("Bu kod allaqachon mavjud", 'error'); return; }
+
+      if (editingId) {
+        promos = promos.map(p => p.id === editingId
+          ? { ...p, code, type, discount, minOrder, maxUses: maxUses || 0, expires: expires || null, active }
+          : p);
+        toast("Promo kod yangilandi");
+      } else {
+        promos.push({ id: 'promo_' + Date.now(), code, type, discount, minOrder, maxUses: maxUses || 0, expires: expires || null, active, usedCount: 0, createdAt: new Date().toISOString() });
+        toast("Promo kod qo'shildi");
+      }
+
+      savePromos(promos);
+      closeModal();
+      renderStats();
+      renderTable();
+    }
+
+    function togglePromo(id) {
+      const p = promos.find(x => x.id === id);
+      if (!p) return;
+      const isExpired = p.expires && new Date(p.expires) < new Date();
+      if (isExpired) { toast("Muddati o'tgan kodni faollashtirish uchun muddatni yangilang", 'error'); return; }
+      promos = promos.map(x => x.id === id ? { ...x, active: !x.active } : x);
+      savePromos(promos);
+      const newState = !p.active;
+      toast(newState ? "Promo kod faollashtirildi" : "Promo kod o'chirildi");
+      renderStats();
+      renderTable();
+    }
+
+    function deletePromo(id) {
+      const p = promos.find(x => x.id === id);
+      if (!p) return;
+      confirmModal(`"${p.code}" promo kodini o'chirmoqchimisiz?`, () => {
+        promos = promos.filter(x => x.id !== id);
+        savePromos(promos);
+        toast("Promo kod o'chirildi");
+        renderStats();
+        renderTable();
+      });
+    }
+
+    document.getElementById('promo-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('promo-modal')) closeModal();
+    });
+
+    loadPromos();
+  </script>
+</body>
+</html>
