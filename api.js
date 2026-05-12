@@ -58,6 +58,38 @@ const apiOrders = {
   setStatus:    (id, status) => apiFetch(`/orders/${id}/status`, { method: 'PUT', body: JSON.stringify({ status }) }),
 };
 
+// ---- User Auth ----
+function getUserToken() { return localStorage.getItem('nh_user_token'); }
+function getUser() { return JSON.parse(localStorage.getItem('nh_user') || 'null'); }
+function isUserLoggedIn() { return !!getUserToken(); }
+
+function userFetch(path, options = {}) {
+  const token = getUserToken();
+  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  return fetch(API + path, { ...options, headers }).then(async res => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Server xatosi');
+    return data;
+  });
+}
+
+const apiUser = {
+  register: (name, email, password, phone) =>
+    userFetch('/users/register', { method: 'POST', body: JSON.stringify({ name, email, password, phone }) })
+      .then(data => { localStorage.setItem('nh_user_token', data.token); localStorage.setItem('nh_user', JSON.stringify(data.user)); return data; }),
+
+  login: (email, password) =>
+    userFetch('/users/login', { method: 'POST', body: JSON.stringify({ email, password }) })
+      .then(data => { localStorage.setItem('nh_user_token', data.token); localStorage.setItem('nh_user', JSON.stringify(data.user)); return data; }),
+
+  logout: () => { localStorage.removeItem('nh_user_token'); localStorage.removeItem('nh_user'); },
+
+  me: () => userFetch('/users/me'),
+
+  myOrders: () => userFetch('/users/me/orders'),
+};
+
 // ---- Promos ----
 const apiPromos = {
   getAll:  ()             => apiFetch('/promos'),
