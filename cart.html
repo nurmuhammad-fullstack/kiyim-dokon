@@ -42,9 +42,8 @@
         <a href="search.html" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </a>
-        <a id="profile-link" href="login.html" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors relative">
+        <a href="#" class="hidden lg:flex text-[#1A1A1A] hover:text-[#C9A96E] transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span id="profile-dot" class="hidden absolute -top-1 -right-1 w-2 h-2 bg-[#C9A96E] rounded-full"></span>
         </a>
         <a href="cart.html" class="relative text-[#C9A96E]">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -302,18 +301,6 @@
 <script src="api.js"></script>
 <script src="products.js"></script>
 <script>
-  // Profil ikonkasini yangilash
-  (function() {
-    const link = document.getElementById('profile-link');
-    const dot  = document.getElementById('profile-dot');
-    if (!link) return;
-    if (isUserLoggedIn()) {
-      link.href = 'profile.html';
-      link.title = getUser()?.name || 'Profilim';
-      if (dot) dot.classList.remove('hidden');
-    }
-  })();
-
   const colorNameMap={"#FFFFFF":"Oq","#1A1A1A":"Qora","#1B2D4F":"To'q ko'k","#8B8B8B":"Kulrang","#C9A96E":"Tuya rangi","#6B7B8D":"Po'lat ko'k","#6B5A4E":"Jigarrang","#8B7355":"Xaki","#8B5A2B":"Ochiq jigarrang"};
 
   let cart=getCart();
