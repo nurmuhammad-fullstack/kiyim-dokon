@@ -221,6 +221,7 @@
     </div>
   </footer>
 
+  <script src="api.js"></script>
   <script src="products.js"></script>
   <script>
     // ---- State ----
@@ -231,6 +232,7 @@
     let priceMax = 4000000;
     let sortBy = 'Yangilar';
     let gridCols = 3;
+    let allProducts = [];
 
     const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
     const colorOptions = [
@@ -382,11 +384,9 @@
 
     // ---- Render products ----
     function getFilteredProducts() {
-      let list = [...products];
-      const catMap = { 'shirts': "ko'ylaklar", 'jackets': 'kurtkalar', 'trousers': 'shimlar', 'accessories': 'aksessuarlar', 'knitwear': 'trikotaj' };
+      let list = [...allProducts];
       if (cat && cat !== 'new-arrivals') {
-        const uzCat = catMap[cat.toLowerCase()] || cat.toLowerCase();
-        list = list.filter(p => p.category.toLowerCase() === uzCat);
+        list = list.filter(p => (p.category?.slug || '') === cat);
       }
       list = list.filter(p => p.price <= priceMax);
       if (sortBy === 'Narx: Pastdan Yuqoriga') list.sort((a, b) => a.price - b.price);
@@ -413,11 +413,16 @@
         grid.innerHTML = list.map(p => renderProductCard(p)).join('');
       }
 
-      // Update banner desc with count
       document.getElementById('banner-desc').textContent = b.desc + ' · ' + list.length + ' ta mahsulot';
     }
 
-    renderProducts();
+    // API dan yuklash
+    const grid = document.getElementById('products-grid');
+    grid.innerHTML = '<p class="col-span-3 text-center text-gray-400 text-sm py-10">Yuklanmoqda...</p>';
+    loadProductsFromAPI().then(products => {
+      allProducts = products;
+      renderProducts();
+    });
 
     // Header scroll
     window.addEventListener('scroll', () => {

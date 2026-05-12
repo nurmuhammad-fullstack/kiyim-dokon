@@ -208,10 +208,13 @@
   </div>
 </div>
 
+<script src="../api.js"></script>
 <script src="assets/admin.js"></script>
 <script>
   requireAuth();
   let editingId = null;
+  let allProducts = [];
+  let allCategories = [];
 
   // ---- Image upload helpers ----
   function handleImageFile(file) {
@@ -268,23 +271,22 @@
     if (file) handleImageFile(file);
   }
 
-  // Populate category dropdowns
+  // ---- Populate category dropdowns ----
   function populateCatSelects() {
-    const cats = getCategories();
-    const opts = cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
-    document.getElementById('filter-cat').innerHTML = '<option value="">Barcha kategoriyalar</option>' + opts;
+    const opts = allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    document.getElementById('filter-cat').innerHTML = '<option value="">Barcha kategoriyalar</option>' +
+      allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     document.getElementById('f-category').innerHTML = opts;
   }
-  populateCatSelects();
 
   function renderTable() {
     const q      = document.getElementById('search').value.toLowerCase();
     const cat    = document.getElementById('filter-cat').value;
     const status = document.getElementById('filter-status').value;
     const stock  = document.getElementById('filter-stock').value;
-    let list = getProducts();
-    if (q)      list = list.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
-    if (cat)    list = list.filter(p => p.category === cat);
+    let list = [...allProducts];
+    if (q)      list = list.filter(p => p.name.toLowerCase().includes(q));
+    if (cat)    list = list.filter(p => p.categoryId === cat);
     if (status) list = list.filter(p => p.status === status);
     if (stock === 'low') list = list.filter(p => p.stock > 0 && p.stock <= 10);
     if (stock === 'out') list = list.filter(p => p.stock === 0);
@@ -308,7 +310,7 @@
             </div>
           </div>
         </td>
-        <td class="px-4 py-3.5 text-xs text-[#6B6B6B]">${p.category}</td>
+        <td class="px-4 py-3.5 text-xs text-[#6B6B6B]">${p.category?.name || ''}</td>
         <td class="px-4 py-3.5">
           <p class="text-xs font-semibold text-[#1A1A1A]">${fmt(p.price)}</p>
           ${p.originalPrice ? `<p class="text-[10px] text-gray-400 line-through">${fmt(p.originalPrice)}</p>` : ''}
@@ -327,20 +329,18 @@
       </tr>
     `).join('');
   }
-  renderTable();
 
   function openModal(id) {
     editingId = id || null;
-    const cats = getCategories();
-    document.getElementById('f-category').innerHTML = cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    document.getElementById('f-category').innerHTML = allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     if (id) {
-      const p = getProducts().find(x => x.id === id);
+      const p = allProducts.find(x => x.id === id);
       document.getElementById('modal-title').textContent  = 'Mahsulotni Tahrirlash';
       document.getElementById('f-id').value              = p.id;
       document.getElementById('f-name').value            = p.name;
       document.getElementById('f-price').value           = p.price;
       document.getElementById('f-original-price').value  = p.originalPrice || '';
-      document.getElementById('f-category').value        = p.category;
+      document.getElementById('f-category').value        = p.categoryId;
       document.getElementById('f-stock').value           = p.stock;
       setImagePreview(p.image, p.name);
       document.getElementById('f-rating').value          = p.rating;
@@ -360,18 +360,16 @@
   function closeModal() { document.getElementById('product-modal').classList.remove('open'); }
   function editProduct(id) { openModal(id); }
 
-  document.getElementById('product-form').addEventListener('submit', e => {
+  document.getElementById('product-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const products = getProducts();
     const colors = document.getElementById('f-colors').value.split(',').map(c => c.trim()).filter(Boolean);
     const origPrice = parseFloat(document.getElementById('f-original-price').value) || null;
     const data = {
-      id:            editingId || uid(),
       name:          document.getElementById('f-name').value.trim(),
       price:         parseFloat(document.getElementById('f-price').value),
       originalPrice: origPrice,
       image:         document.getElementById('f-image').value || '',
-      category:      document.getElementById('f-category').value,
+      categoryId:    document.getElementById('f-category').value,
       stock:         parseInt(document.getElementById('f-stock').value) || 0,
       rating:        parseFloat(document.getElementById('f-rating').value) || 4.5,
       reviewCount:   parseInt(document.getElementById('f-reviews').value) || 0,
@@ -380,24 +378,33 @@
       isSale:        document.getElementById('f-issale').checked,
       status:        document.getElementById('f-status').checked ? 'active' : 'draft',
     };
-    if (editingId) {
-      const idx = products.findIndex(p => p.id === editingId);
-      if (idx >= 0) products[idx] = data;
-    } else {
-      products.push(data);
+    try {
+      if (editingId) {
+        const updated = await apiProducts.update(editingId, data);
+        const idx = allProducts.findIndex(p => p.id === editingId);
+        if (idx >= 0) allProducts[idx] = { ...updated, category: allCategories.find(c => c.id === updated.categoryId) };
+      } else {
+        const created = await apiProducts.create(data);
+        allProducts.unshift({ ...created, category: allCategories.find(c => c.id === created.categoryId) });
+      }
+      closeModal();
+      renderTable();
+      toast(editingId ? 'Mahsulot yangilandi!' : 'Mahsulot qo\'shildi!');
+    } catch(err) {
+      toast(err.message || 'Xato yuz berdi', 'error');
     }
-    saveProducts(products);
-    closeModal();
-    renderTable();
-    toast(editingId ? 'Mahsulot yangilandi!' : 'Mahsulot qo\'shildi!');
   });
 
   function deleteProduct(id) {
-    confirmModal('Bu mahsulotni o\'chirishni tasdiqlaysizmi?', () => {
-      const prods = getProducts().filter(p => p.id !== id);
-      saveProducts(prods);
-      renderTable();
-      toast('Mahsulot o\'chirildi.', 'info');
+    confirmModal('Bu mahsulotni o\'chirishni tasdiqlaysizmi?', async () => {
+      try {
+        await apiProducts.remove(id);
+        allProducts = allProducts.filter(p => p.id !== id);
+        renderTable();
+        toast('Mahsulot o\'chirildi.', 'info');
+      } catch(err) {
+        toast(err.message || 'Xato yuz berdi', 'error');
+      }
     });
   }
 
@@ -405,6 +412,14 @@
   document.getElementById('product-modal').addEventListener('click', e => {
     if (e.target === document.getElementById('product-modal')) closeModal();
   });
+
+  // ---- Init: API dan yuklash ----
+  Promise.all([apiProducts.getAdmin(), apiCategories.getAll()]).then(([prods, cats]) => {
+    allProducts = prods;
+    allCategories = cats;
+    populateCatSelects();
+    renderTable();
+  }).catch(err => toast(err.message || 'Yuklashda xato', 'error'));
 </script>
 </body>
 </html>

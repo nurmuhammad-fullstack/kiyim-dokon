@@ -356,6 +356,7 @@
     </div>
   </footer>
 
+  <script src="api.js"></script>
   <script src="products.js"></script>
   <script>
     // Mobile menu toggle
@@ -382,10 +383,15 @@
       }
     });
 
-    // Render featured products (first 6)
+    // Render featured products (API dan)
     const container = document.getElementById('featured-products');
-    const featured = products.slice(0, 6);
-    container.innerHTML = featured.map(p => renderProductCard(p)).join('');
+    container.innerHTML = '<p class="col-span-3 text-center text-gray-400 text-sm py-10">Yuklanmoqda...</p>';
+    loadProductsFromAPI().then(products => {
+      const featured = products.slice(0, 6);
+      container.innerHTML = featured.length
+        ? featured.map(p => renderProductCard(p)).join('')
+        : '<p class="col-span-3 text-center text-gray-400 text-sm py-10">Mahsulotlar topilmadi</p>';
+    });
   </script>
 </body>
 </html>

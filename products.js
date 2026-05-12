@@ -1,150 +1,15 @@
-// ---- Default product catalog (used as fallback if localStorage is empty) ----
-const DEFAULT_PRODUCTS = [
-  {
-    id: "1",
-    name: "Tikuvchi Oxford Ko'ylagi",
-    price: 890000,
-    image: "https://images.unsplash.com/photo-1760128761565-c0d779481070?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.8,
-    reviewCount: 124,
-    isNew: true,
-    isSale: false,
-    category: "Ko'ylaklar",
-    colors: ["#FFFFFF", "#1B2D4F", "#6B7B8D", "#1A1A1A"],
-    stock: 45,
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "Klassik Jun Blazer",
-    price: 2450000,
-    originalPrice: 2900000,
-    image: "https://images.unsplash.com/photo-1754485115876-9221149ccc19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.9,
-    reviewCount: 87,
-    isNew: false,
-    isSale: true,
-    category: "Kurtkalar",
-    colors: ["#1A1A1A", "#6B5A4E", "#1B2D4F"],
-    stock: 18,
-    status: "active",
-  },
-  {
-    id: "3",
-    name: "Slim-Fit Chino Shimlari",
-    price: 1190000,
-    image: "https://images.unsplash.com/photo-1760433468572-44d1cf0b8641?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.6,
-    reviewCount: 93,
-    isNew: false,
-    isSale: false,
-    category: "Shimlar",
-    colors: ["#C9A96E", "#1A1A1A", "#8B8B8B"],
-    stock: 32,
-    status: "active",
-  },
-  {
-    id: "4",
-    name: "Merino Yuqori Yoqali Trikotaj",
-    price: 1650000,
-    image: "https://images.unsplash.com/photo-1686704814231-ef0474eea7f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.7,
-    reviewCount: 61,
-    isNew: true,
-    isSale: false,
-    category: "Trikotaj",
-    colors: ["#C9A96E", "#FFFFFF", "#1A1A1A", "#8B7355"],
-    stock: 27,
-    status: "active",
-  },
-  {
-    id: "5",
-    name: "Ko'k Oxford Rasmiy Ko'ylagi",
-    price: 950000,
-    image: "https://images.unsplash.com/photo-1732605559386-bc59426d1b16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.5,
-    reviewCount: 108,
-    isNew: false,
-    isSale: false,
-    category: "Ko'ylaklar",
-    colors: ["#1B2D4F", "#FFFFFF", "#6B7B8D"],
-    stock: 53,
-    status: "active",
-  },
-  {
-    id: "6",
-    name: "Ikki Qatorli Palto",
-    price: 3850000,
-    image: "https://images.unsplash.com/photo-1627906933655-906bde7d79e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 5.0,
-    reviewCount: 42,
-    isNew: true,
-    isSale: false,
-    category: "Kurtkalar",
-    colors: ["#1A1A1A", "#6B5A4E"],
-    stock: 12,
-    status: "active",
-  },
-  {
-    id: "7",
-    name: "Burmalangan Rasmiy Shimlar",
-    price: 1350000,
-    image: "https://images.unsplash.com/photo-1493357335960-4583bfa6f8d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.4,
-    reviewCount: 55,
-    isNew: false,
-    isSale: false,
-    category: "Shimlar",
-    colors: ["#8B8B8B", "#1A1A1A", "#1B2D4F"],
-    stock: 21,
-    status: "active",
-  },
-  {
-    id: "8",
-    name: "Premium Charm Kamar",
-    price: 580000,
-    image: "https://images.unsplash.com/photo-1631160246898-58192f971b5f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600",
-    rating: 4.6,
-    reviewCount: 79,
-    isNew: false,
-    isSale: false,
-    category: "Aksessuarlar",
-    colors: ["#1A1A1A", "#8B5A2B"],
-    stock: 64,
-    status: "active",
-  },
-];
-
-// ---- Load products: localStorage first, fallback to defaults ----
-function loadProducts() {
-  const raw = localStorage.getItem('nh_products');
-  if (raw) {
-    try {
-      const stored = JSON.parse(raw);
-      if (Array.isArray(stored) && stored.length > 0) return stored;
-    } catch (e) {}
-  }
-  // seed localStorage with defaults on first visit
-  localStorage.setItem('nh_products', JSON.stringify(DEFAULT_PRODUCTS));
-  return DEFAULT_PRODUCTS;
-}
-
-// Active products visible to shoppers (admin may mark some inactive)
-const products = loadProducts().filter(p => p.status !== 'inactive');
-
-// ---- Cart helpers (shared across all pages) ----
+// ---- Cart helpers (localStorage — faqat cart saqlanadi) ----
 function getCart() { return JSON.parse(localStorage.getItem('nh_cart') || '[]'); }
 function saveCart(c) { localStorage.setItem('nh_cart', JSON.stringify(c)); }
 
-function addToCart(productId) {
+function addToCart(productId, productData) {
   const cart = getCart();
-  const p = products.find(x => x.id === productId);
-  if (!p) return;
   const existing = cart.find(i => i.productId === productId && !i.size && !i.color);
   if (existing) {
     existing.qty++;
   } else {
-    cart.push({ productId, color: p.colors ? p.colors[0] : '', size: '', qty: 1 });
+    const color = productData?.colors?.[0] || '';
+    cart.push({ productId, color, size: '', qty: 1 });
   }
   saveCart(cart);
   updateAllCartCounts();
@@ -204,7 +69,7 @@ function renderProductCard(p) {
       <div class="pt-4 pb-1 flex-1 flex flex-col">
         <div class="flex items-center gap-1.5 mb-2.5">${colors}</div>
         <a href="product.html?id=${p.id}">
-          <p class="text-[#6B6B6B] text-[10px] tracking-widest uppercase mb-1 font-medium">${p.category}</p>
+          <p class="text-[#6B6B6B] text-[10px] tracking-widest uppercase mb-1 font-medium">${p.category?.name || p.category || ''}</p>
           <h3 class="text-[#1A1A1A] hover:text-[#C9A96E] transition-colors leading-snug mb-2 text-sm font-medium">${p.name}</h3>
         </a>
         <div class="flex items-center gap-1.5 mb-2.5">
@@ -220,11 +85,14 @@ function renderProductCard(p) {
   `;
 }
 
+// ---- product cache (sahifa ichida ishlatish uchun) ----
+let _productCache = {};
+
 function quickAdd(btn, productId) {
-  addToCart(productId);
+  addToCart(productId, _productCache[productId]);
   const span = btn.querySelector('span');
   const origText = span.textContent;
-  span.textContent = 'Qo\'shildi!';
+  span.textContent = "Qo'shildi!";
   btn.style.background = '#C9A96E';
   setTimeout(() => {
     span.textContent = origText;
@@ -237,6 +105,18 @@ function toggleWishlist(btn, productId) {
   const isWishlisted = svg.getAttribute('fill') !== 'none';
   svg.setAttribute('fill', isWishlisted ? 'none' : '#C9A96E');
   svg.setAttribute('stroke', isWishlisted ? '#1A1A1A' : '#C9A96E');
+}
+
+// ---- API dan mahsulotlarni yuklash ----
+async function loadProductsFromAPI(filterFn) {
+  try {
+    const products = await apiProducts.getAll();
+    products.forEach(p => { _productCache[p.id] = p; });
+    return filterFn ? products.filter(filterFn) : products;
+  } catch (e) {
+    console.error('API xatosi:', e.message);
+    return [];
+  }
 }
 
 // Run on DOM ready to set initial cart count

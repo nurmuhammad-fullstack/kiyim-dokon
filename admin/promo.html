@@ -140,17 +140,22 @@
     </div>
   </div>
 
-  <script src="assets/admin.js"></script>
+  <script src="../api.js"></script>
+<script src="assets/admin.js"></script>
   <script>
     requireAuth();
 
     let promos = [];
     let editingId = null;
 
-    function loadPromos() {
-      promos = getPromos();
-      renderStats();
-      renderTable();
+    async function loadPromos() {
+      try {
+        promos = await apiPromos.getAll();
+        renderStats();
+        renderTable();
+      } catch(err) {
+        toast(err.message || 'Yuklashda xato', 'error');
+      }
     }
 
     function renderStats() {
@@ -289,7 +294,7 @@
       editingId = null;
     }
 
-    function savePromo() {
+    async function savePromo() {
       const code = document.getElementById('promo-code').value.trim().toUpperCase();
       const type = document.getElementById('promo-type').value;
       const discount = parseFloat(document.getElementById('promo-discount').value);
@@ -303,47 +308,53 @@
       if (!discount || discount <= 0) { toast("Chegirma miqdorini kiriting", 'error'); return; }
       if (type === 'percent' && discount > 100) { toast("Foiz 100dan oshmasligi kerak", 'error'); return; }
 
-      const duplicate = promos.find(p => p.code === code && p.id !== editingId);
-      if (duplicate) { toast("Bu kod allaqachon mavjud", 'error'); return; }
-
-      if (editingId) {
-        promos = promos.map(p => p.id === editingId
-          ? { ...p, code, type, discount, minOrder, maxUses: maxUses || 0, expires: expires || null, active }
-          : p);
-        toast("Promo kod yangilandi");
-      } else {
-        promos.push({ id: 'promo_' + Date.now(), code, type, discount, minOrder, maxUses: maxUses || 0, expires: expires || null, active, usedCount: 0, createdAt: new Date().toISOString() });
-        toast("Promo kod qo'shildi");
+      try {
+        if (editingId) {
+          const updated = await apiPromos.update(editingId, { active, discount, minOrder, maxUses, expires: expires || null });
+          promos = promos.map(p => p.id === editingId ? updated : p);
+          toast("Promo kod yangilandi");
+        } else {
+          const created = await apiPromos.create({ code, type, discount, minOrder, maxUses, expires: expires || null, active });
+          promos.unshift(created);
+          toast("Promo kod qo'shildi");
+        }
+        closeModal();
+        renderStats();
+        renderTable();
+      } catch(err) {
+        toast(err.message || 'Xato yuz berdi', 'error');
       }
-
-      savePromos(promos);
-      closeModal();
-      renderStats();
-      renderTable();
     }
 
-    function togglePromo(id) {
+    async function togglePromo(id) {
       const p = promos.find(x => x.id === id);
       if (!p) return;
       const isExpired = p.expires && new Date(p.expires) < new Date();
       if (isExpired) { toast("Muddati o'tgan kodni faollashtirish uchun muddatni yangilang", 'error'); return; }
-      promos = promos.map(x => x.id === id ? { ...x, active: !x.active } : x);
-      savePromos(promos);
-      const newState = !p.active;
-      toast(newState ? "Promo kod faollashtirildi" : "Promo kod o'chirildi");
-      renderStats();
-      renderTable();
+      try {
+        const updated = await apiPromos.update(id, { active: !p.active });
+        promos = promos.map(x => x.id === id ? updated : x);
+        toast(!p.active ? "Promo kod faollashtirildi" : "Promo kod o'chirildi");
+        renderStats();
+        renderTable();
+      } catch(err) {
+        toast(err.message || 'Xato yuz berdi', 'error');
+      }
     }
 
     function deletePromo(id) {
       const p = promos.find(x => x.id === id);
       if (!p) return;
-      confirmModal(`"${p.code}" promo kodini o'chirmoqchimisiz?`, () => {
-        promos = promos.filter(x => x.id !== id);
-        savePromos(promos);
-        toast("Promo kod o'chirildi");
-        renderStats();
-        renderTable();
+      confirmModal(`"${p.code}" promo kodini o'chirmoqchimisiz?`, async () => {
+        try {
+          await apiPromos.remove(id);
+          promos = promos.filter(x => x.id !== id);
+          toast("Promo kod o'chirildi");
+          renderStats();
+          renderTable();
+        } catch(err) {
+          toast(err.message || 'Xato yuz berdi', 'error');
+        }
       });
     }
 

@@ -130,11 +130,11 @@ function stockBadge(n) {
 }
 
 // ---- Auth ----
-function isLoggedIn() { return sessionStorage.getItem('nh_admin_auth') === '1'; }
+function isLoggedIn() { return apiIsLoggedIn() || sessionStorage.getItem('nh_admin_auth') === '1'; }
 function requireAuth() {
   if (!isLoggedIn()) { window.location.href = 'login.html'; }
 }
-function logout() { sessionStorage.removeItem('nh_admin_auth'); window.location.href = 'login.html'; }
+function logout() { apiLogout(); window.location.href = 'login.html'; }
 
 // ---- Toast ----
 function toast(msg, type='success') {

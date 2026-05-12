@@ -116,24 +116,27 @@
     </div>
   </div>
 
-  <script src="assets/admin.js"></script>
+  <script src="../api.js"></script>
+<script src="assets/admin.js"></script>
   <script>
     requireAuth();
 
     let categories = [];
     let editingId = null;
 
-    function loadCategories() {
-      categories = getCategories();
-      renderStats();
-      renderTable();
+    async function loadCategories() {
+      try {
+        categories = await apiCategories.getAll();
+        renderStats();
+        renderTable();
+      } catch(err) {
+        toast(err.message || 'Yuklashda xato', 'error');
+      }
     }
 
     function renderStats() {
-      const products = getProducts();
-      const active = categories.filter(c => c.active !== false).length;
       const total = categories.length;
-      const withProducts = categories.filter(c => products.some(p => p.category.toLowerCase() === c.name.toLowerCase())).length;
+      const withProducts = categories.filter(c => (c._count?.products || 0) > 0).length;
 
       document.getElementById('stats-row').innerHTML = `
         <div class="bg-white border border-gray-100 p-5 shadow-sm">
@@ -142,7 +145,7 @@
         </div>
         <div class="bg-white border border-gray-100 p-5 shadow-sm">
           <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Faol</p>
-          <p class="text-3xl font-cormorant text-[#1A1A1A]">${active}</p>
+          <p class="text-3xl font-cormorant text-[#1A1A1A]">${total}</p>
         </div>
         <div class="bg-white border border-gray-100 p-5 shadow-sm">
           <p class="text-[10px] tracking-widest uppercase text-[#6B6B6B] mb-1">Mahsulotli</p>
@@ -152,24 +155,19 @@
     }
 
     function renderTable() {
-      const products = getProducts();
-      const sorted = [...categories].sort((a, b) => (a.order || 0) - (b.order || 0));
-      document.getElementById('cat-count').textContent = sorted.length + ' ta kategoriya';
-
+      document.getElementById('cat-count').textContent = categories.length + ' ta kategoriya';
       const tbody = document.getElementById('cat-table-body');
-      if (!sorted.length) {
+      if (!categories.length) {
         tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 text-[#6B6B6B] text-sm">Hali kategoriya yo'q</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = sorted.map(cat => {
-        const count = products.filter(p => p.category.toLowerCase() === cat.name.toLowerCase()).length;
-        const isActive = cat.active !== false;
+      tbody.innerHTML = categories.map(cat => {
+        const count = cat._count?.products || 0;
         return `
           <tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
             <td class="px-6 py-4">
               <div class="font-semibold text-sm text-[#1A1A1A]">${cat.name}</div>
-              ${cat.description ? `<div class="text-xs text-[#6B6B6B] mt-0.5 line-clamp-1">${cat.description}</div>` : ''}
             </td>
             <td class="px-6 py-4">
               <code class="text-xs bg-gray-100 px-2 py-1 rounded text-[#6B6B6B]">${cat.slug}</code>
@@ -178,9 +176,7 @@
               <span class="text-sm font-medium text-[#1A1A1A]">${count}</span>
             </td>
             <td class="px-6 py-4 text-center">
-              <span class="inline-flex items-center px-2.5 py-1 text-[10px] font-semibold tracking-wide rounded-full ${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">
-                ${isActive ? 'Faol' : 'Nofaol'}
-              </span>
+              <span class="inline-flex items-center px-2.5 py-1 text-[10px] font-semibold tracking-wide rounded-full bg-green-100 text-green-800">Faol</span>
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-2">
@@ -237,50 +233,50 @@
       editingId = null;
     }
 
-    function saveCategory() {
+    async function saveCategory() {
       const name = document.getElementById('cat-name').value.trim();
       const slug = document.getElementById('cat-slug').value.trim().toLowerCase();
-      const desc = document.getElementById('cat-desc').value.trim();
-      const order = parseInt(document.getElementById('cat-order').value) || 0;
-      const active = document.getElementById('cat-active').checked;
 
       if (!name) { toast("Kategoriya nomini kiriting", 'error'); return; }
       if (!slug) { toast("Slug kiriting", 'error'); return; }
       if (!/^[a-z0-9-]+$/.test(slug)) { toast("Slug faqat lotin harflari va tire bo'lishi kerak", 'error'); return; }
 
-      const duplicate = categories.find(c => c.slug === slug && c.id !== editingId);
-      if (duplicate) { toast("Bu slug allaqachon mavjud", 'error'); return; }
-
-      if (editingId) {
-        categories = categories.map(c => c.id === editingId ? { ...c, name, slug, description: desc, order, active } : c);
-        toast("Kategoriya yangilandi");
-      } else {
-        const newCat = { id: 'cat_' + Date.now(), name, slug, description: desc, order, active, createdAt: new Date().toISOString() };
-        categories.push(newCat);
-        toast("Kategoriya qo'shildi");
+      try {
+        if (editingId) {
+          const updated = await apiCategories.update(editingId, { name, slug });
+          categories = categories.map(c => c.id === editingId ? { ...c, ...updated } : c);
+          toast("Kategoriya yangilandi");
+        } else {
+          const created = await apiCategories.create({ name, slug });
+          categories.push({ ...created, _count: { products: 0 } });
+          toast("Kategoriya qo'shildi");
+        }
+        closeModal();
+        renderStats();
+        renderTable();
+      } catch(err) {
+        toast(err.message || 'Xato yuz berdi', 'error');
       }
-
-      saveCategories(categories);
-      closeModal();
-      renderStats();
-      renderTable();
     }
 
     function deleteCategory(id) {
       const cat = categories.find(c => c.id === id);
       if (!cat) return;
-      const products = getProducts();
-      const count = products.filter(p => p.category.toLowerCase() === cat.name.toLowerCase()).length;
+      const count = cat._count?.products || 0;
       const msg = count > 0
         ? `"${cat.name}" kategoriyasini o'chirmoqchimisiz? Bu kategoriyaga ${count} ta mahsulot bog'liq!`
         : `"${cat.name}" kategoriyasini o'chirmoqchimisiz?`;
 
-      confirmModal(msg, () => {
-        categories = categories.filter(c => c.id !== id);
-        saveCategories(categories);
-        toast("Kategoriya o'chirildi");
-        renderStats();
-        renderTable();
+      confirmModal(msg, async () => {
+        try {
+          await apiCategories.remove(id);
+          categories = categories.filter(c => c.id !== id);
+          toast("Kategoriya o'chirildi");
+          renderStats();
+          renderTable();
+        } catch(err) {
+          toast(err.message || 'Xato yuz berdi', 'error');
+        }
       });
     }
 

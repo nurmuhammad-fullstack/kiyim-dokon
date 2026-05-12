@@ -274,6 +274,7 @@
     </div>
   </footer>
 
+  <script src="api.js"></script>
   <script src="products.js"></script>
   <script>
     const colorNameMap = {
@@ -296,51 +297,72 @@
 
     // ---- Load product ----
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id') || '1';
-    const product = products.find(p => p.id === id) || products[0];
-    const allImages = [product.image, ...extraImages];
+    const id = params.get('id');
+    let product = null;
+    let allProducts = [];
+    const allImages = [];
     let activeImage = 0;
-    let selectedColor = product.colors ? product.colors[0] : '';
+    let selectedColor = '';
     let selectedSize = '';
     let quantity = 1;
     let wishlisted = false;
     let openFaq = 0;
 
-    const catSlugMap = { "ko'ylaklar": 'shirts', 'kurtkalar': 'jackets', 'shimlar': 'trousers', 'aksessuarlar': 'accessories', 'trikotaj': 'knitwear' };
-    function catSlug(c){ return catSlugMap[c.toLowerCase()] || c.toLowerCase(); }
+    function initProduct(p) {
+      product = p;
+      _productCache[p.id] = p;
+      allImages.length = 0;
+      allImages.push(p.image, ...extraImages);
+      selectedColor = p.colors?.[0] || '';
 
-    // Breadcrumb
-    document.getElementById('breadcrumb-cat').textContent = product.category;
-    document.getElementById('breadcrumb-cat').href = `category.html?cat=${catSlug(product.category)}`;
-    document.getElementById('breadcrumb-name').textContent = product.name;
+      const catSlug = p.category?.slug || '';
+      const catName = p.category?.name || '';
 
-    // Badges
-    if (product.isNew) document.getElementById('badge-new').classList.remove('hidden');
-    if (product.isSale) document.getElementById('badge-sale').classList.remove('hidden');
+      document.getElementById('breadcrumb-cat').textContent = catName;
+      document.getElementById('breadcrumb-cat').href = `category.html?cat=${catSlug}`;
+      document.getElementById('breadcrumb-name').textContent = p.name;
 
-    // Category link
-    const catLink = document.getElementById('product-cat-link');
-    catLink.textContent = product.category;
-    catLink.href = `category.html?cat=${catSlug(product.category)}`;
+      if (p.isNew) document.getElementById('badge-new').classList.remove('hidden');
+      if (p.isSale) document.getElementById('badge-sale').classList.remove('hidden');
 
-    // Stars
-    document.getElementById('stars').innerHTML = renderStars(product.rating);
-    document.getElementById('review-count').textContent = `${product.rating} (${product.reviewCount} sharh)`;
+      const catLink = document.getElementById('product-cat-link');
+      catLink.textContent = catName;
+      catLink.href = `category.html?cat=${catSlug}`;
 
-    // Name
-    document.getElementById('product-name').textContent = product.name;
+      document.getElementById('stars').innerHTML = renderStars(p.rating);
+      document.getElementById('review-count').textContent = `${p.rating} (${p.reviewCount} sharh)`;
+      document.getElementById('product-name').textContent = p.name;
+      document.getElementById('price').textContent = formatPrice(p.price);
 
-    // Price
-    document.getElementById('price').textContent = formatPrice(product.price);
-    if (product.originalPrice) {
-      document.getElementById('original-price').textContent = formatPrice(product.originalPrice);
-      document.getElementById('original-price').classList.remove('hidden');
-    }
-    if (product.isSale && product.originalPrice) {
-      const disc = Math.round((1 - product.price / product.originalPrice) * 100);
-      const badge = document.getElementById('sale-badge');
-      badge.textContent = disc + '% OFF';
-      badge.classList.remove('hidden');
+      if (p.originalPrice) {
+        document.getElementById('original-price').textContent = formatPrice(p.originalPrice);
+        document.getElementById('original-price').classList.remove('hidden');
+      }
+      if (p.isSale && p.originalPrice) {
+        const disc = Math.round((1 - p.price / p.originalPrice) * 100);
+        const badge = document.getElementById('sale-badge');
+        badge.textContent = disc + '% OFF';
+        badge.classList.remove('hidden');
+      }
+
+      // Gallery
+      const thumbsContainer = document.getElementById('thumbnails');
+      thumbsContainer.innerHTML = allImages.map((img, i) => `
+        <button class="thumb-btn flex-shrink-0 w-16 lg:w-20 h-20 lg:h-24 overflow-hidden border-2 transition-all ${i === 0 ? 'thumb-active' : 'border-transparent hover:border-gray-300'}" onclick="setActiveImage(${i})">
+          <img src="${img}" alt="View ${i+1}" class="w-full h-full object-cover" />
+        </button>
+      `).join('');
+      document.getElementById('main-img').src = allImages[0];
+
+      // Colors
+      if (p.colors && p.colors.length > 0) {
+        document.getElementById('color-section').classList.remove('hidden');
+        renderColorSelector();
+      }
+
+      // Sizes & related
+      renderSizeSelector();
+      renderFaq();
     }
 
     // ---- Image gallery ----
@@ -352,34 +374,17 @@
       });
     }
 
-    const thumbsContainer = document.getElementById('thumbnails');
-    thumbsContainer.innerHTML = allImages.map((img, i) => `
-      <button class="thumb-btn flex-shrink-0 w-16 lg:w-20 h-20 lg:h-24 overflow-hidden border-2 transition-all ${i === 0 ? 'thumb-active' : 'border-transparent hover:border-gray-300'}" onclick="setActiveImage(${i})">
-        <img src="${img}" alt="View ${i+1}" class="w-full h-full object-cover" />
-      </button>
-    `).join('');
-    document.getElementById('main-img').src = allImages[0];
-
     // ---- Colors ----
-    if (product.colors && product.colors.length > 0) {
-      document.getElementById('color-section').classList.remove('hidden');
-      function renderColorSelector() {
-        document.getElementById('color-selector').innerHTML = product.colors.map(c => `
-          <button onclick="selectColor('${c}')" title="${colorNameMap[c] || c}" class="w-8 h-8 rounded-full border-2 transition-all ${selectedColor === c ? 'border-[#1A1A1A] scale-105 shadow-md' : 'border-transparent hover:border-gray-300'}" style="background-color:${c}; ${c === '#FFFFFF' ? 'outline: 1px solid #e0e0e0; outline-offset: 1px;' : ''}"></button>
-        `).join('');
-        document.getElementById('selected-color-name').textContent = colorNameMap[selectedColor] || selectedColor;
-      }
-      renderColorSelector();
+    function renderColorSelector() {
+      document.getElementById('color-selector').innerHTML = product.colors.map(c => `
+        <button onclick="selectColor('${c}')" title="${colorNameMap[c] || c}" class="w-8 h-8 rounded-full border-2 transition-all ${selectedColor === c ? 'border-[#1A1A1A] scale-105 shadow-md' : 'border-transparent hover:border-gray-300'}" style="background-color:${c}; ${c === '#FFFFFF' ? 'outline: 1px solid #e0e0e0; outline-offset: 1px;' : ''}"></button>
+      `).join('');
+      document.getElementById('selected-color-name').textContent = colorNameMap[selectedColor] || selectedColor;
     }
 
     function selectColor(c) {
       selectedColor = c;
-      if (product.colors) {
-        document.getElementById('color-selector').innerHTML = product.colors.map(col => `
-          <button onclick="selectColor('${col}')" title="${colorNameMap[col] || col}" class="w-8 h-8 rounded-full border-2 transition-all ${selectedColor === col ? 'border-[#1A1A1A] scale-105 shadow-md' : 'border-transparent hover:border-gray-300'}" style="background-color:${col}; ${col === '#FFFFFF' ? 'outline: 1px solid #e0e0e0; outline-offset: 1px;' : ''}"></button>
-        `).join('');
-        document.getElementById('selected-color-name').textContent = colorNameMap[c] || c;
-      }
+      renderColorSelector();
     }
 
     // ---- Sizes ----
@@ -447,10 +452,26 @@
     renderFaq();
 
     // ---- Related Products ----
-    const related = products.filter(p => p.id !== product.id && p.category === product.category).slice(0, 3);
-    const others = products.filter(p => p.id !== product.id).slice(0, 3);
-    const suggested = related.length >= 3 ? related : [...related, ...others].slice(0, 3);
-    document.getElementById('related-products').innerHTML = suggested.map(p => renderProductCard(p)).join('');
+    function renderRelated() {
+      const related = allProducts.filter(p => p.id !== product.id && p.category?.id === product.category?.id).slice(0, 3);
+      const others = allProducts.filter(p => p.id !== product.id).slice(0, 3);
+      const suggested = related.length >= 3 ? related : [...related, ...others].slice(0, 3);
+      document.getElementById('related-products').innerHTML = suggested.map(p => renderProductCard(p)).join('');
+    }
+
+    // ---- API yuklash ----
+    Promise.all([
+      apiProducts.getById(id).catch(() => null),
+      apiProducts.getAll().catch(() => []),
+    ]).then(([p, all]) => {
+      allProducts = all;
+      all.forEach(x => { _productCache[x.id] = x; });
+      const prod = p || all[0];
+      if (prod) {
+        initProduct(prod);
+        renderRelated();
+      }
+    });
 
     // ---- Mobile menu ----
     const toggle = document.getElementById('mobile-toggle');

@@ -54,9 +54,10 @@
     <p class="text-center text-[10px] text-gray-400 mt-6">© 2026 Novus Homme Admin Panel</p>
   </div>
 
+  <script src="../api.js"></script>
   <script src="assets/admin.js"></script>
   <script>
-    if (isLoggedIn()) window.location.href = 'index.html';
+    if (apiIsLoggedIn()) window.location.href = 'index.html';
 
     document.getElementById('toggle-pw').addEventListener('click', () => {
       const pw = document.getElementById('password');
@@ -66,17 +67,18 @@
       else { pw.type = 'password'; show.classList.remove('hidden'); hide.classList.add('hidden'); }
     });
 
-    document.getElementById('login-form').addEventListener('submit', e => {
+    document.getElementById('login-form').addEventListener('submit', async e => {
       e.preventDefault();
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value;
-      const settings = getSettings();
+      const email = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
       const errEl = document.getElementById('error-msg');
-      if (u === 'admin' && p === settings.adminPassword) {
+      errEl.classList.add('hidden');
+      try {
+        await apiLogin(email, password);
         sessionStorage.setItem('nh_admin_auth', '1');
         window.location.href = 'index.html';
-      } else {
-        errEl.textContent = 'Foydalanuvchi nomi yoki parol noto\'g\'ri.';
+      } catch(err) {
+        errEl.textContent = err.message || 'Email yoki parol noto\'g\'ri.';
         errEl.classList.remove('hidden');
       }
     });

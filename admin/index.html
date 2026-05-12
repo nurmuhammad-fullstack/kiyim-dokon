@@ -134,70 +134,70 @@
   </div>
 </main>
 
+<script src="../api.js"></script>
 <script src="assets/admin.js"></script>
 <script>
   requireAuth();
 
   document.getElementById('today-date').textContent = new Date().toLocaleDateString('uz-UZ', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-  const orders   = getOrders();
-  const products = getProducts();
+  Promise.all([apiOrders.getAll(), apiProducts.getAdmin()]).then(([orders, products]) => {
+    // KPIs
+    const delivered = orders.filter(o => o.status === 'delivered');
+    const revenue   = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0);
+    const pending   = orders.filter(o => o.status === 'pending').length;
+    const lowStock  = products.filter(p => p.stock <= 10).length;
+    const avg       = delivered.length ? Math.round(delivered.reduce((s, o) => s + o.total, 0) / delivered.length) : 0;
 
-  // KPIs
-  const delivered = orders.filter(o => o.status === 'delivered');
-  const revenue   = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0);
-  const pending   = orders.filter(o => o.status === 'pending').length;
-  const lowStock  = products.filter(p => p.stock <= 10).length;
-  const avg       = delivered.length ? Math.round(delivered.reduce((s, o) => s + o.total, 0) / delivered.length) : 0;
+    document.getElementById('kpi-revenue').textContent  = fmt(revenue);
+    document.getElementById('kpi-orders').textContent   = orders.length + ' ta';
+    document.getElementById('kpi-pending').textContent  = pending + ' ta kutilmoqda';
+    document.getElementById('kpi-products').textContent = products.length + ' ta';
+    document.getElementById('kpi-low').textContent      = lowStock ? lowStock + ' ta kam qoldi' : 'Zaxira yaxshi';
+    document.getElementById('kpi-avg').textContent      = fmt(avg);
 
-  document.getElementById('kpi-revenue').textContent  = fmt(revenue);
-  document.getElementById('kpi-orders').textContent   = orders.length + ' ta';
-  document.getElementById('kpi-pending').textContent  = pending + ' ta kutilmoqda';
-  document.getElementById('kpi-products').textContent = products.length + ' ta';
-  document.getElementById('kpi-low').textContent      = lowStock ? lowStock + ' ta kam qoldi' : 'Zaxira yaxshi';
-  document.getElementById('kpi-avg').textContent      = fmt(avg);
-
-  // Recent orders
-  const recent = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
-  document.getElementById('recent-orders').innerHTML = recent.map(o => `
-    <div class="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="location.href='orders.html'">
-      <div class="min-w-0">
-        <p class="text-xs font-semibold text-[#1A1A1A] truncate">${o.customer}</p>
-        <p class="text-[10px] text-[#6B6B6B]">${o.id} · ${fmtDate(o.date)}</p>
-      </div>
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <span class="text-xs font-semibold text-[#1A1A1A]">${fmt(o.total)}</span>
-        ${statusBadge(o.status)}
-      </div>
-    </div>
-  `).join('');
-
-  // Stock alerts
-  const lowItems = products.filter(p => p.stock <= 10).slice(0, 5);
-  document.getElementById('stock-alerts').innerHTML = lowItems.length
-    ? lowItems.map(p => `
-        <div class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
-          <p class="text-xs font-medium text-[#1A1A1A] truncate max-w-[130px]">${p.name}</p>
-          ${stockBadge(p.stock)}
+    // Recent orders
+    const recent = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+    document.getElementById('recent-orders').innerHTML = recent.map(o => `
+      <div class="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 transition-colors cursor-pointer" onclick="location.href='orders.html'">
+        <div class="min-w-0">
+          <p class="text-xs font-semibold text-[#1A1A1A] truncate">${o.customer}</p>
+          <p class="text-[10px] text-[#6B6B6B]">${o.id.slice(0,8).toUpperCase()} · ${fmtDate(o.createdAt)}</p>
         </div>
-      `).join('')
-    : '<p class="px-5 py-4 text-xs text-[#6B6B6B]">Barcha mahsulotlar yetarli.</p>';
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <span class="text-xs font-semibold text-[#1A1A1A]">${fmt(o.total)}</span>
+          ${statusBadge(o.status)}
+        </div>
+      </div>
+    `).join('');
 
-  // Category breakdown
-  const catBreak = {};
-  products.forEach(p => { catBreak[p.category] = (catBreak[p.category] || 0) + 1; });
-  const total = products.length;
-  document.getElementById('cat-breakdown').innerHTML = Object.entries(catBreak).map(([cat, cnt]) => `
-    <div>
-      <div class="flex justify-between text-xs mb-1">
-        <span class="text-[#1A1A1A] font-medium">${cat}</span>
-        <span class="text-[#6B6B6B]">${cnt} ta</span>
+    // Stock alerts
+    const lowItems = products.filter(p => p.stock <= 10).slice(0, 5);
+    document.getElementById('stock-alerts').innerHTML = lowItems.length
+      ? lowItems.map(p => `
+          <div class="flex items-center justify-between px-5 py-3 hover:bg-gray-50 transition-colors">
+            <p class="text-xs font-medium text-[#1A1A1A] truncate max-w-[130px]">${p.name}</p>
+            ${stockBadge(p.stock)}
+          </div>
+        `).join('')
+      : '<p class="px-5 py-4 text-xs text-[#6B6B6B]">Barcha mahsulotlar yetarli.</p>';
+
+    // Category breakdown
+    const catBreak = {};
+    products.forEach(p => { const n = p.category?.name || 'Boshqa'; catBreak[n] = (catBreak[n] || 0) + 1; });
+    const total = products.length;
+    document.getElementById('cat-breakdown').innerHTML = Object.entries(catBreak).map(([cat, cnt]) => `
+      <div>
+        <div class="flex justify-between text-xs mb-1">
+          <span class="text-[#1A1A1A] font-medium">${cat}</span>
+          <span class="text-[#6B6B6B]">${cnt} ta</span>
+        </div>
+        <div class="w-full bg-gray-100 h-1.5 rounded-full">
+          <div class="bg-[#C9A96E] h-1.5 rounded-full transition-all" style="width:${Math.round(cnt/total*100)}%"></div>
+        </div>
       </div>
-      <div class="w-full bg-gray-100 h-1.5 rounded-full">
-        <div class="bg-[#C9A96E] h-1.5 rounded-full transition-all" style="width:${Math.round(cnt/total*100)}%"></div>
-      </div>
-    </div>
-  `).join('');
+    `).join('');
+  }).catch(err => console.error('Dashboard yuklanmadi:', err.message));
 </script>
 </body>
 </html>

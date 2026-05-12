@@ -173,6 +173,7 @@
   </div>
 </footer>
 
+<script src="api.js"></script>
 <script src="products.js"></script>
 <script>
   // Cart count
@@ -197,12 +198,6 @@
     document.getElementById('header').classList.toggle('shadow-sm',window.scrollY>20);
   });
 
-  // Trending (show top-rated)
-  const trendingGrid=document.getElementById('trending-grid');
-  const trending=[...products].sort((a,b)=>b.rating-a.rating).slice(0,4);
-  trendingGrid.innerHTML=trending.map(p=>renderProductCard(p)).join('');
-
-  // Search logic
   const input=document.getElementById('search-input');
   const stateEmpty=document.getElementById('state-empty');
   const stateResults=document.getElementById('state-results');
@@ -210,50 +205,69 @@
   const resultsGrid=document.getElementById('results-grid');
   const resultsQuery=document.getElementById('results-query');
   const resultsCount=document.getElementById('results-count');
+  const trendingGrid=document.getElementById('trending-grid');
 
-  function doSearch(q){
-    q=q.trim();
-    if(!q){
+  let allProducts = [];
+
+  // Debounce — har harfda API chaqirmaslik uchun
+  let searchTimer = null;
+  function doSearch(q) {
+    q = q.trim();
+    if(!q) {
       stateEmpty.classList.remove('hidden');
       stateResults.classList.add('hidden');
       stateNone.classList.add('hidden');
       return;
     }
-    const ql=q.toLowerCase();
-    let found=products.filter(p=>
-      p.name.toLowerCase().includes(ql)||
-      p.category.toLowerCase().includes(ql)||
-      (p.isNew && ql==='new')||
-      (p.isSale && ql==='sale')
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => runSearch(q), 300);
+  }
+
+  function runSearch(q) {
+    const ql = q.toLowerCase();
+    const found = allProducts.filter(p =>
+      p.name.toLowerCase().includes(ql) ||
+      (p.category?.name || '').toLowerCase().includes(ql) ||
+      (p.isNew && ql === 'yangi') ||
+      (p.isSale && ql === 'chegirma')
     );
     stateEmpty.classList.add('hidden');
-    if(found.length===0){
+    if(found.length === 0) {
       stateResults.classList.add('hidden');
       stateNone.classList.remove('hidden');
     } else {
       stateNone.classList.add('hidden');
       stateResults.classList.remove('hidden');
-      resultsQuery.textContent='"'+q+'"';
-      resultsCount.textContent=found.length+' ta mahsulot topildi';
-      resultsGrid.innerHTML=found.map(p=>renderProductCard(p)).join('');
+      resultsQuery.textContent = '"' + q + '"';
+      resultsCount.textContent = found.length + ' ta mahsulot topildi';
+      resultsGrid.innerHTML = found.map(p => renderProductCard(p)).join('');
     }
   }
 
-  input.addEventListener('input',()=>doSearch(input.value));
-  input.addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(input.value); });
+  input.addEventListener('input', () => doSearch(input.value));
+  input.addEventListener('keydown', e => { if(e.key==='Enter') { clearTimeout(searchTimer); runSearch(input.value.trim()); }});
 
-  function setTag(btn,val){
-    document.querySelectorAll('.tag-btn').forEach(b=>b.classList.remove('active'));
+  function setTag(btn, val) {
+    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    input.value=val;
+    input.value = val;
     doSearch(val);
     input.focus();
   }
 
-  // Pre-fill from URL ?q=
-  const urlQ=new URLSearchParams(window.location.search).get('q');
-  if(urlQ){ input.value=urlQ; doSearch(urlQ); }
-  else { input.focus(); }
+  // API dan mahsulotlar yuklash
+  loadProductsFromAPI().then(products => {
+    allProducts = products;
+
+    // Trending
+    const trending = [...products].sort((a,b) => b.rating - a.rating).slice(0, 4);
+    trendingGrid.innerHTML = trending.map(p => renderProductCard(p)).join('');
+
+    // URL dan qidiruv
+    const urlQ = new URLSearchParams(window.location.search).get('q');
+    if(urlQ) { input.value = urlQ; runSearch(urlQ); }
+    else { input.focus(); }
+  });
 </script>
 </body>
 </html>

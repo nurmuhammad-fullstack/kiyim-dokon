@@ -126,10 +126,12 @@
   </div>
 </div>
 
+<script src="../api.js"></script>
 <script src="assets/admin.js"></script>
 <script>
   requireAuth();
   let currentFilter = '';
+  let allOrders = [];
 
   function setStatusFilter(s) {
     currentFilter = s;
@@ -143,10 +145,14 @@
 
   function renderTable() {
     const q = document.getElementById('search').value.toLowerCase();
-    let list = getOrders();
+    let list = [...allOrders];
     if (currentFilter) list = list.filter(o => o.status === currentFilter);
-    if (q) list = list.filter(o => o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.email.toLowerCase().includes(q));
-    list = [...list].sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (q) list = list.filter(o =>
+      o.id.toLowerCase().includes(q) ||
+      o.customer.toLowerCase().includes(q) ||
+      o.email.toLowerCase().includes(q)
+    );
+    list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     document.getElementById('order-count').textContent = list.length + ' ta buyurtma';
     const tbody = document.getElementById('orders-tbody');
@@ -156,14 +162,14 @@
     tbody.innerHTML = list.map(o => `
       <tr class="hover:bg-gray-50 transition-colors cursor-pointer" onclick="viewOrder('${o.id}')">
         <td class="px-5 py-3.5">
-          <p class="text-xs font-semibold text-[#1A1A1A]">${o.id}</p>
+          <p class="text-xs font-semibold text-[#1A1A1A]">${o.id.slice(0,8).toUpperCase()}</p>
           <p class="text-[10px] text-[#6B6B6B]">${o.items.length} ta mahsulot</p>
         </td>
         <td class="px-4 py-3.5">
           <p class="text-xs font-medium text-[#1A1A1A]">${o.customer}</p>
           <p class="text-[10px] text-[#6B6B6B]">${o.phone}</p>
         </td>
-        <td class="px-4 py-3.5 text-xs text-[#6B6B6B]">${fmtDate(o.date)}</td>
+        <td class="px-4 py-3.5 text-xs text-[#6B6B6B]">${fmtDate(o.createdAt)}</td>
         <td class="px-4 py-3.5 text-xs font-semibold text-[#1A1A1A]">${fmt(o.total)}</td>
         <td class="px-4 py-3.5">${statusBadge(o.status)}</td>
         <td class="px-4 py-3.5" onclick="event.stopPropagation()">
@@ -175,29 +181,35 @@
     `).join('');
   }
 
-  function updateStatus(id, status) {
-    const orders = getOrders();
-    const o = orders.find(x => x.id === id);
-    if (o) { o.status = status; saveOrders(orders); renderTable(); toast('Holat yangilandi!'); }
+  async function updateStatus(id, status) {
+    try {
+      await apiOrders.setStatus(id, status);
+      const o = allOrders.find(x => x.id === id);
+      if (o) o.status = status;
+      renderTable();
+      toast('Holat yangilandi!');
+    } catch(err) {
+      toast(err.message || 'Xato yuz berdi', 'error');
+    }
   }
 
   function viewOrder(id) {
-    const o = getOrders().find(x => x.id === id);
-    const products = getProducts();
-    document.getElementById('modal-order-id').textContent = o.id;
+    const o = allOrders.find(x => x.id === id);
+    if (!o) return;
+    document.getElementById('modal-order-id').textContent = o.id.slice(0,8).toUpperCase();
     document.getElementById('modal-body').innerHTML = `
       <div class="space-y-5">
         <div class="grid grid-cols-2 gap-4 text-xs">
           <div><p class="text-[#6B6B6B] mb-1">Mijoz</p><p class="font-semibold">${o.customer}</p></div>
           <div><p class="text-[#6B6B6B] mb-1">Telefon</p><p class="font-semibold">${o.phone}</p></div>
           <div><p class="text-[#6B6B6B] mb-1">Email</p><p class="font-semibold">${o.email}</p></div>
-          <div><p class="text-[#6B6B6B] mb-1">Sana</p><p class="font-semibold">${fmtDate(o.date)}</p></div>
+          <div><p class="text-[#6B6B6B] mb-1">Sana</p><p class="font-semibold">${fmtDate(o.createdAt)}</p></div>
           <div class="col-span-2"><p class="text-[#6B6B6B] mb-1">Manzil</p><p class="font-semibold">${o.address}</p></div>
         </div>
         <div class="border-t border-gray-100 pt-4">
           <p class="text-[10px] tracking-widest uppercase font-semibold text-[#6B6B6B] mb-3">Mahsulotlar</p>
           ${o.items.map(item => {
-            const p = products.find(x => x.id === item.productId);
+            const p = item.product;
             return p ? `
               <div class="flex items-center gap-3 py-2 border-b border-gray-50">
                 <img src="${p.image}" class="w-10 h-12 object-cover bg-[#F5F5F3] rounded flex-shrink-0" />
@@ -208,7 +220,7 @@
                     ${item.size ? item.size : ''} · ${item.qty} ta
                   </p>
                 </div>
-                <p class="text-xs font-semibold flex-shrink-0">${fmt(p.price * item.qty)}</p>
+                <p class="text-xs font-semibold flex-shrink-0">${fmt(item.price * item.qty)}</p>
               </div>
             ` : '';
           }).join('')}
@@ -230,33 +242,15 @@
   }
 
   function closeModal() { document.getElementById('order-modal').classList.remove('open'); }
-  document.getElementById('order-modal').addEventListener('click', e => { if (e.target === document.getElementById('order-modal')) closeModal(); });
+  document.getElementById('order-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('order-modal')) closeModal();
+  });
 
-  function addDemoOrder() {
-    const products = getProducts();
-    const names = ['Alisher Qodirov','Barno Mirzayeva','Jasurbek Toshev','Kamola Xoliqova','Nodir Rahimov'];
-    const statuses = ['pending','processing'];
-    const p1 = products[Math.floor(Math.random()*products.length)];
-    const p2 = products[Math.floor(Math.random()*products.length)];
-    const orders = getOrders();
-    const newOrder = {
-      id: 'ORD-' + String(orders.length + 100).padStart(3,'0'),
-      customer: names[Math.floor(Math.random()*names.length)],
-      email: 'demo@example.com',
-      phone: '+998 90 ' + Math.floor(1000000+Math.random()*9000000),
-      items: [{productId:p1.id,qty:1,color:p1.colors?.[0]||'',size:'M'}],
-      total: p1.price,
-      status: statuses[Math.floor(Math.random()*statuses.length)],
-      date: new Date().toISOString().split('T')[0],
-      address: 'Toshkent, Test ko\'chasi, 1-uy',
-    };
-    orders.push(newOrder);
-    saveOrders(orders);
+  // ---- Init ----
+  apiOrders.getAll().then(orders => {
+    allOrders = orders;
     renderTable();
-    toast('Demo buyurtma qo\'shildi!');
-  }
-
-  renderTable();
+  }).catch(err => toast(err.message || 'Yuklashda xato', 'error'));
 </script>
 </body>
 </html>
