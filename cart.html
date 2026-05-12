@@ -498,7 +498,15 @@
   }
 
   // ---- Init: API dan mahsulotlarni cache ga yuklab, keyin render ----
-  loadProductsFromAPI().then(() => { render(); });
+  loadProductsFromAPI().then(() => {
+    // Eski ID lar (DB da yo'q) ni savatdan tozalaymiz
+    const validCart = cart.filter(i => _productCache[i.productId]);
+    if (validCart.length !== cart.length) {
+      cart = validCart;
+      saveCart(cart);
+    }
+    render();
+  });
 
   // Mobile menu
   const toggle=document.getElementById('mobile-toggle');
@@ -557,12 +565,22 @@
     btn.disabled = true;
     btn.textContent = 'Yuborilmoqda...';
 
-    const items = cart.map(i => ({
-      productId: i.productId,
-      qty: i.qty,
-      color: i.color || '',
-      size: i.size || '',
-    }));
+    const items = cart
+      .filter(i => _productCache[i.productId])
+      .map(i => ({
+        productId: i.productId,
+        qty: i.qty,
+        color: i.color || '',
+        size: i.size || '',
+      }));
+
+    if (!items.length) {
+      errEl.textContent = 'Savatingizdagi mahsulotlar topilmadi. Sahifani yangilang va qaytadan qo\'shing.';
+      errEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Buyurtmani Tasdiqlash`;
+      return;
+    }
 
     try {
       const order = await apiOrders.create({
