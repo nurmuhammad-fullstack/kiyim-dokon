@@ -249,10 +249,7 @@
       <div>
         <label class="text-[10px] tracking-widest uppercase font-semibold text-[#6B6B6B] block mb-1.5">Telefon *</label>
         <input id="co-phone" type="tel" required placeholder="+998 90 123 45 67" class="w-full border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
-      </div>
-      <div>
-        <label class="text-[10px] tracking-widest uppercase font-semibold text-[#6B6B6B] block mb-1.5">Email *</label>
-        <input id="co-email" type="email" required placeholder="email@example.com" class="w-full border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#C9A96E] transition-colors" />
+        <p class="text-[11px] text-[#6B6B6B] mt-1.5">Ushbu telefon raqam orqali siz bilan bog'lanib, buyurtmangizni tasdiqlaymiz.</p>
       </div>
       <div>
         <label class="text-[10px] tracking-widest uppercase font-semibold text-[#6B6B6B] block mb-1.5">Yetkazib berish manzili *</label>
@@ -553,7 +550,7 @@
     const name    = document.getElementById('co-name').value.trim();
     const surname = document.getElementById('co-surname').value.trim();
     const phone   = document.getElementById('co-phone').value.trim();
-    const email   = document.getElementById('co-email').value.trim();
+    const email   = phone + '@novushomme.uz';
     const address = document.getElementById('co-address').value.trim();
     const errEl   = document.getElementById('co-error');
     const btn     = document.getElementById('co-submit');
